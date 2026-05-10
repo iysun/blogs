@@ -54,9 +54,10 @@ pnpm content:sync
 
 脚本会：
 
-- 写入 [`docs/blog/issue-<编号>.md`](docs/blog/)（含 `syncedFromIssue: true`）；
-- 更新 [`docs/blog/index.md`](docs/blog/index.md) 的文章列表；
-- 更新 [`docs/.vitepress/data/home-repos.json`](docs/.vitepress/data/home-repos.json)、[`home-posts.json`](docs/.vitepress/data/home-posts.json)、[`blog-sidebar.json`](docs/.vitepress/data/blog-sidebar.json)。
+- 写入 [`docs/blog/issue-<编号>.md`](docs/blog/)（含 `syncedFromIssue: true` 与 `pageClass: blog-doc`）；
+- 更新 [`docs/.vitepress/data/home-repos.json`](docs/.vitepress/data/home-repos.json) 与 [`home-posts.json`](docs/.vitepress/data/home-posts.json)（供首页展示）。
+
+站点**不生成** `docs/blog/index.md`，导航中亦无「博客」目录页；文章入口为首页列表与各篇 `/blog/issue-*` 链接。主题配置为 **`sidebar: false`**，无左侧栏。
 
 然后检查 `git diff`，确认无误后提交并推送。CI（[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)）只执行 `pnpm docs:build` 与部署，**不会在流水线里同步**。
 

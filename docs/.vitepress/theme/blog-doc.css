@@ -2,8 +2,8 @@
  * 博客文档页主题：依赖 frontmatter `pageClass: blog-doc`（由 Layout 根节点承载）
  */
 
-/* 主内容区：轻量层次与留白 */
-.Layout.blog-doc #VPContent.has-sidebar {
+/* 主内容区：轻量层次与留白（无左侧栏时不用 has-sidebar） */
+.Layout.blog-doc #VPContent:not(.is-home) {
   background: linear-gradient(
     180deg,
     color-mix(in srgb, var(--vp-c-bg) 96%, var(--vp-c-brand-1) 4%) 0%,
@@ -13,7 +13,7 @@
 }
 
 @media (min-width: 960px) {
-  .Layout.blog-doc #VPContent.has-sidebar {
+  .Layout.blog-doc #VPContent:not(.is-home) {
     min-height: calc(100vh - var(--vp-nav-height));
   }
 }

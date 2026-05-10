@@ -70,7 +70,7 @@ async function main() {
     }
   }
 
-  const { owner, repo, base, pinnedRepos, profile, postsPreviewLimit } = config
+  const { owner, repo, pinnedRepos, profile, postsPreviewLimit } = config
   const { apiValue: issueLabelsApi, labels: issueLabelsList } = normalizeIssueLabels(config.issueLabel)
   /** 仅同步仓库 owner（配置里的 owner 字段）创建的 Issue；设为 false 则包含所有作者 */
   const issuesOnlyRepoOwner = config.issuesOnlyRepoOwner !== false
@@ -184,7 +184,6 @@ async function main() {
   }
 
   const previewN = Number(postsPreviewLimit) > 0 ? Number(postsPreviewLimit) : 8
-  const baseNorm = typeof base === 'string' && base.endsWith('/') ? base : `${base || '/'}/`
   const postsMeta = issues.slice(0, previewN).map((issue) => ({
     title: issue.title || `第 ${issue.number} 号 Issue`,
     date: toIsoDate(issue.created_at),
@@ -203,12 +202,6 @@ async function main() {
       2
     ) + '\n'
   )
-
-  const sidebarItems = issues.map((issue) => ({
-    text: issue.title || `第 ${issue.number} 号 Issue`,
-    link: `/blog/issue-${issue.number}`,
-  }))
-  writeFile(path.join(dataDir, 'blog-sidebar.json'), JSON.stringify({ items: sidebarItems }, null, 2) + '\n')
 
   const reposList = Array.isArray(pinnedRepos) ? pinnedRepos : []
   const repoCards = []
@@ -231,42 +224,6 @@ async function main() {
     }
   }
   writeFile(path.join(dataDir, 'home-repos.json'), JSON.stringify(repoCards, null, 2) + '\n')
-
-  const blogIndexLines = [
-    '---',
-    'title: 博客',
-    'description: 由 GitHub Issues 同步的文章',
-    'pageClass: blog-doc',
-    '---',
-    '',
-    '# 博客',
-    '',
-    issueLabelsApi
-      ? '以下文章由 GitHub Issues 同步，需至少包含以下**任一** label：' +
-          issueLabelsList.map((l) => '`' + l + '`').join('、') +
-          '。' +
-          (issuesOnlyRepoOwner
-            ? '默认仅包含仓库所有者 `' + owner + '` 创建的 Issue（可在配置中关闭 `issuesOnlyRepoOwner`）。'
-            : '') +
-          ' 修改 Issue 后请重新执行 `pnpm content:sync`。'
-      : '以下文章由 GitHub Issues 同步（未按 label 过滤）。' +
-          (issuesOnlyRepoOwner
-            ? '默认仅包含仓库所有者 `' + owner + '` 创建的 Issue（可在配置中关闭 `issuesOnlyRepoOwner`）。'
-            : '') +
-          ' 修改 Issue 后请重新执行 `pnpm content:sync`。',
-    '',
-    '## 全部文章',
-    '',
-  ]
-  if (issues.length === 0) {
-    blogIndexLines.push('_目前没有符合条件的 Issue。_', '')
-  } else {
-    for (const issue of issues) {
-      const t = issue.title || `第 ${issue.number} 号 Issue`
-      blogIndexLines.push(`- [${t}](./issue-${issue.number}.md)`, '')
-    }
-  }
-  writeFile(path.join(blogDir, 'index.md'), blogIndexLines.join('\n'))
 
   console.log('Synced', issues.length, 'issues,', repoCards.length, 'repos.')
   console.log('Data written to docs/.vitepress/data/ and docs/blog/')

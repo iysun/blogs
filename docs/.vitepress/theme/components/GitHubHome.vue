@@ -123,9 +123,6 @@ const emptyPostsHint = computed(() => {
           <span class="gh-post-date">{{ post.date }}</span>
         </li>
       </ul>
-      <p class="gh-more">
-        <a :href="withBase('/blog/')" class="gh-inline-link">查看全部文章 →</a>
-      </p>
     </section>
 
     <section v-else class="gh-section gh-muted">
@@ -292,19 +289,6 @@ const emptyPostsHint = computed(() => {
   font-size: 0.85rem;
   color: var(--vp-c-text-3);
   flex-shrink: 0;
-}
-
-.gh-more {
-  margin: 0.75rem 0 0;
-}
-
-.gh-inline-link {
-  color: var(--vp-c-brand-1);
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-.gh-inline-link:hover {
-  text-decoration: underline;
 }
 
 .gh-muted {

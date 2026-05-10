@@ -1,16 +1,10 @@
 import { defineConfig } from 'vitepress'
 import githubContent from './github-content.json'
-import blogSidebar from './data/blog-sidebar.json'
 
 const baseRaw = typeof githubContent.base === 'string' ? githubContent.base : '/blogs/'
 const base = baseRaw.endsWith('/') ? baseRaw : `${baseRaw}/`
 const ghProfile = githubContent.profile
 const ghUser = ghProfile?.githubUsername || githubContent.owner
-
-const blogItems = [
-  { text: '概览', link: '/blog/' },
-  ...(Array.isArray(blogSidebar.items) ? blogSidebar.items : []),
-]
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -21,14 +15,9 @@ export default defineConfig({
   themeConfig: {
     siteTitle: 'Eason 的博客',
 
-    nav: [
-      { text: '首页', link: '/' },
-      { text: '博客', link: '/blog/' },
-    ],
+    nav: [{ text: '首页', link: '/' }],
 
-    sidebar: {
-      '/blog/': blogItems,
-    },
+    sidebar: false,
 
     outline: { label: '本页目录', level: 'deep' },
 
