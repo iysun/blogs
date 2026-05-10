@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
  * Fetches GitHub Issues (optional label filter) and repo metadata, writes docs/issue-<n>.md
- * at the docs root and JSON under docs/.vitepress/data/. Run manually: pnpm content:sync
+ * at the docs root and JSON under docs/.vitepress/data/ (home-posts, home-repos, issue-nav).
+ * Run manually: pnpm content:sync
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -213,6 +214,31 @@ async function main() {
     ) + '\n'
   )
 
+  /** 按创建时间升序：上一篇 = 更早，下一篇 = 更晚 */
+  const chronological = [...issues].sort(
+    (a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+  )
+  const toNav = (iss) =>
+    iss
+      ? {
+          issue: iss.number,
+          path: `/issue-${iss.number}`,
+          title: iss.title || `第 ${iss.number} 号 Issue`,
+        }
+      : null
+  const byIssue = {}
+  for (let i = 0; i < chronological.length; i++) {
+    const cur = chronological[i]
+    byIssue[String(cur.number)] = {
+      prev: toNav(i > 0 ? chronological[i - 1] : null),
+      next: toNav(i < chronological.length - 1 ? chronological[i + 1] : null),
+    }
+  }
+  writeFile(
+    path.join(dataDir, 'issue-nav.json'),
+    JSON.stringify({ byIssue, updatedAt: new Date().toISOString() }, null, 2) + '\n'
+  )
+
   const reposList = Array.isArray(pinnedRepos) ? pinnedRepos : []
   const repoCards = []
   for (const full of reposList) {
@@ -236,7 +262,7 @@ async function main() {
   writeFile(path.join(dataDir, 'home-repos.json'), JSON.stringify(repoCards, null, 2) + '\n')
 
   console.log('Synced', issues.length, 'issues,', repoCards.length, 'repos.')
-  console.log('Data written to docs/.vitepress/data/ and docs/issue-*.md')
+  console.log('Data written to docs/.vitepress/data/ (incl. issue-nav.json) and docs/issue-*.md')
 }
 
 main().catch((err) => {
