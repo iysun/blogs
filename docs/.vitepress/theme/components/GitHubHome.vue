@@ -32,6 +32,28 @@ const langColor: Record<string, string> = {
 function colorFor(lang: string) {
   return langColor[lang] || '#8b949e'
 }
+
+const issueLabelTrim = computed(() => {
+  const l = (githubContent as { issueLabel?: string }).issueLabel
+  return typeof l === 'string' && l.trim() !== '' ? l.trim() : ''
+})
+
+const onlyOwnerDefault = computed(() => {
+  const v = (githubContent as { issuesOnlyRepoOwner?: boolean }).issuesOnlyRepoOwner
+  return v !== false
+})
+
+const emptyPostsHint = computed(() => {
+  const o = githubContent.owner
+  const r = githubContent.repo
+  const ownerNote = onlyOwnerDefault.value
+    ? `Only issues created by ${o} are included (set issuesOnlyRepoOwner to false for all authors). `
+    : ''
+  if (issueLabelTrim.value) {
+    return `${ownerNote}Add the ${issueLabelTrim.value} label to issues in ${o}/${r}, then run pnpm content:sync.`
+  }
+  return `${ownerNote}Sync uses all issues in ${o}/${r} (no label filter). Run pnpm content:sync after creating issues.`
+})
 </script>
 
 <template>
@@ -88,7 +110,7 @@ function colorFor(lang: string) {
     </section>
 
     <section v-else class="gh-section gh-muted">
-      <p>No posts yet. Add the <code>{{ githubContent.issueLabel }}</code> label to issues in <code>{{ githubContent.owner }}/{{ githubContent.repo }}</code>, then run <code>pnpm content:sync</code>.</p>
+      <p>No posts yet. {{ emptyPostsHint }}</p>
     </section>
   </div>
 </template>

@@ -1,7 +1,8 @@
 {
   "owner": "iysun",
   "repo": "blogs",
-  "issueLabel": "blog",
+  "issueLabel": null,
+  "issuesOnlyRepoOwner": true,
   "base": "/blogs/",
   "pinnedRepos": ["iysun/blogs"],
   "profile": {

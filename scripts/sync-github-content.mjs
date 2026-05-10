@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Fetches GitHub Issues (by label) and repo metadata, writes docs under docs/blog
+ * Fetches GitHub Issues (optional label filter) and repo metadata, writes docs under docs/blog
  * and JSON under docs/.vitepress/data/. Run manually: pnpm content:sync
  */
 import fs from 'node:fs'
@@ -29,6 +29,31 @@ function toIsoDate(iso) {
   return String(iso).slice(0, 10)
 }
 
+/**
+ * GitHub `labels` 查询参数为逗号分隔；满足**任一** label 的 Issue 会被返回。
+ * @param {unknown} raw 字符串、字符串数组，或空
+ * @returns {{ apiValue: string, labels: string[] }}
+ */
+function normalizeIssueLabels(raw) {
+  if (raw == null) return { apiValue: '', labels: [] }
+  if (Array.isArray(raw)) {
+    const labels = raw
+      .map((x) => (typeof x === 'string' ? x.trim() : String(x).trim()))
+      .filter(Boolean)
+    return { apiValue: labels.join(','), labels }
+  }
+  if (typeof raw === 'string') {
+    const t = raw.trim()
+    if (!t) return { apiValue: '', labels: [] }
+    const labels = t
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+    return { apiValue: labels.join(','), labels }
+  }
+  return { apiValue: '', labels: [] }
+}
+
 async function main() {
   if (!fs.existsSync(configPath)) {
     console.error('Missing', configPath)
@@ -45,9 +70,13 @@ async function main() {
     }
   }
 
-  const { owner, repo, issueLabel, base, pinnedRepos, profile, postsPreviewLimit } = config
-  if (!owner || !repo || !issueLabel) {
-    console.error('github-content.json must define owner, repo, issueLabel')
+  const { owner, repo, base, pinnedRepos, profile, postsPreviewLimit } = config
+  const { apiValue: issueLabelsApi, labels: issueLabelsList } = normalizeIssueLabels(config.issueLabel)
+  /** 仅同步仓库 owner（配置里的 owner 字段）创建的 Issue；设为 false 则包含所有作者 */
+  const issuesOnlyRepoOwner = config.issuesOnlyRepoOwner !== false
+
+  if (!owner || !repo) {
+    console.error('github-content.json must define owner, repo')
     process.exit(1)
   }
   if (owner === 'YOUR_GITHUB_USERNAME' || repo === 'YOUR_GITHUB_USERNAME') {
@@ -72,25 +101,41 @@ async function main() {
     return text ? JSON.parse(text) : null
   }
 
+  if (issueLabelsApi) {
+    console.log('Issue filter: labels (any match) =', issueLabelsList.join(', '))
+  } else {
+    console.log('Issue filter: no label (all issues from list, then author filter)')
+  }
+  if (issuesOnlyRepoOwner) {
+    console.log('Author filter: only issues created by repo owner', owner)
+  }
+
   /** @type {any[]} */
-  const issues = []
+  const rawIssues = []
   let page = 1
   for (;;) {
     const q = new URLSearchParams({
-      labels: issueLabel,
       state: 'all',
       per_page: '100',
       page: String(page),
     })
+    if (issueLabelsApi) {
+      q.set('labels', issueLabelsApi)
+    }
     const batch = await ghJson(`/repos/${owner}/${repo}/issues?${q}`)
     if (!Array.isArray(batch) || batch.length === 0) break
     for (const issue of batch) {
       if (issue.pull_request) continue
-      issues.push(issue)
+      rawIssues.push(issue)
     }
     if (batch.length < 100) break
     page += 1
   }
+
+  const ownerLc = String(owner).toLowerCase()
+  const issues = issuesOnlyRepoOwner
+    ? rawIssues.filter((i) => i.user && String(i.user.login).toLowerCase() === ownerLc)
+    : rawIssues
 
   issues.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 
@@ -194,13 +239,21 @@ async function main() {
     '',
     '# Blog',
     '',
-    'Posts below are generated from GitHub Issues (label `' + issueLabel + '`). Re-run `pnpm content:sync` after editing issues.',
+    issueLabelsApi
+      ? 'Posts below are generated from GitHub Issues with **any** of labels: ' +
+          issueLabelsList.map((l) => '`' + l + '`').join(', ') +
+          ' (only issues created by `' +
+          owner +
+          '` when `issuesOnlyRepoOwner` is true). Re-run `pnpm content:sync` after editing issues.'
+      : 'Posts below are generated from GitHub Issues (no label filter; only issues created by `' +
+          owner +
+          '` when `issuesOnlyRepoOwner` is true). Re-run `pnpm content:sync` after editing issues.',
     '',
     '## All posts',
     '',
   ]
   if (issues.length === 0) {
-    blogIndexLines.push('_No issues with this label yet._', '')
+    blogIndexLines.push('_No matching issues yet._', '')
   } else {
     for (const issue of issues) {
       const t = issue.title || `Issue ${issue.number}`
