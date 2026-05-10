@@ -54,10 +54,12 @@ pnpm content:sync
 
 脚本会：
 
-- 写入 [`docs/blog/issue-<编号>.md`](docs/blog/)（含 `syncedFromIssue: true` 与 `pageClass: blog-doc`）；
-- 更新 [`docs/.vitepress/data/home-repos.json`](docs/.vitepress/data/home-repos.json) 与 [`home-posts.json`](docs/.vitepress/data/home-posts.json)（供首页展示）。
+- 写入 [`docs/issue-<编号>.md`](docs/)（与 `index.md` 同级，含 `syncedFromIssue: true`、`layout: IssuePostLayout`、`pageClass: blog-doc`，以及 Issue 的 **`labels`**：`{ name, color }[]`，`color` 为 GitHub 返回的 6 位十六进制、无 `#`）；
+- 更新 [`docs/.vitepress/data/home-repos.json`](docs/.vitepress/data/home-repos.json) 与 [`home-posts.json`](docs/.vitepress/data/home-posts.json)（`posts[].labels` 与正文一致，供首页文章列表展示标签）。
 
-站点**不生成** `docs/blog/index.md`，导航中亦无「博客」目录页；文章入口为首页列表与各篇 `/blog/issue-*` 链接。主题配置为 **`sidebar: false`**，无左侧栏。
+文章页通过主题里的 [`IssuePostLayout.vue`](docs/.vitepress/theme/components/IssuePostLayout.vue) 包裹 Markdown（`<Content />`），可在该组件中增加页眉、元信息、交互等；**不会**使用默认 `doc` 布局的右侧大纲与文末上一篇/下一篇。版式与正文样式由 [`blog-doc.css`](docs/.vitepress/theme/blog-doc.css)（选择器挂在 `.issue-post`）配合 `content-tokens` 完成。
+
+站点**不生成**博客目录索引页；文章入口为首页列表与各篇 **`/issue-*`** 链接（相对站点根路径，部署在子路径时为 `/<base>/issue-*`）。主题配置为 **`sidebar: false`**，无左侧栏。
 
 然后检查 `git diff`，确认无误后提交并推送。CI（[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)）只执行 `pnpm docs:build` 与部署，**不会在流水线里同步**。
 
@@ -79,13 +81,14 @@ pnpm content:sync
 |------|------|
 | `docs/` | VitePress 文档根目录 |
 | `docs/index.md` | 首页（GitHub 风布局组件） |
-| `docs/blog/` | 同步生成的博客 Markdown（`issue-*.md`） |
+| `docs/issue-*.md` | 同步生成的 Issue 文章（与 `docs/index.md` 同级，URL 为 `/issue-<编号>`） |
 | `docs/.vitepress/config.mts` | 站点与主题配置 |
 | `docs/.vitepress/github-content.json` | Issues 与仓库卡片、首页资料的单一配置源 |
 | `docs/.vitepress/data/` | 同步生成的 JSON（随仓库提交） |
 | `docs/.vitepress/theme/` | 自定义主题（扩展默认主题） |
 | `docs/.vitepress/theme/content-tokens.css` | 内容区共用 CSS 变量（首页文章流与博客正文） |
-| `docs/.vitepress/theme/blog-doc.css` | 博客正文页样式（`pageClass: blog-doc`，使用 `content-tokens` 变量） |
+| `docs/.vitepress/theme/components/IssuePostLayout.vue` | 同步 Issue 文章外壳（`layout: IssuePostLayout`，内嵌 `<Content />`） |
+| `docs/.vitepress/theme/blog-doc.css` | 同步文章页样式（`pageClass: blog-doc` 下 `.issue-post`，使用 `content-tokens` 变量） |
 | `scripts/sync-github-content.mjs` | 同步脚本 |
 
 ## 部署

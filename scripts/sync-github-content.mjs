@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Fetches GitHub Issues (optional label filter) and repo metadata, writes docs under docs/blog
- * and JSON under docs/.vitepress/data/. Run manually: pnpm content:sync
+ * Fetches GitHub Issues (optional label filter) and repo metadata, writes docs/issue-<n>.md
+ * at the docs root and JSON under docs/.vitepress/data/. Run manually: pnpm content:sync
  */
 import fs from 'node:fs'
 import path from 'node:path'
@@ -10,7 +10,6 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const repoRoot = path.join(__dirname, '..')
 const docsDir = path.join(repoRoot, 'docs')
-const blogDir = path.join(docsDir, 'blog')
 const vpDir = path.join(docsDir, '.vitepress')
 const dataDir = path.join(vpDir, 'data')
 const configPath = path.join(vpDir, 'github-content.json')
@@ -140,30 +139,39 @@ async function main() {
   issues.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
 
   const activeNumbers = new Set(issues.map((i) => i.number))
-  fs.mkdirSync(blogDir, { recursive: true })
+  fs.mkdirSync(docsDir, { recursive: true })
 
-  if (fs.existsSync(blogDir)) {
-    for (const name of fs.readdirSync(blogDir)) {
-      const m = /^issue-(\d+)\.md$/.exec(name)
-      if (!m) continue
-      const n = Number(m[1])
-      if (!activeNumbers.has(n)) {
-        fs.unlinkSync(path.join(blogDir, name))
-        console.log('Removed stale', name)
-      }
+  for (const name of fs.readdirSync(docsDir)) {
+    const m = /^issue-(\d+)\.md$/.exec(name)
+    if (!m) continue
+    const n = Number(m[1])
+    if (!activeNumbers.has(n)) {
+      fs.unlinkSync(path.join(docsDir, name))
+      console.log('Removed stale', name)
     }
   }
 
-  const labelNames = (issue) =>
-    Array.isArray(issue.labels) ? issue.labels.map((l) => (typeof l === 'string' ? l : l.name)).filter(Boolean) : []
+  /** @returns {{ name: string, color: string }[]} color 为不含 # 的 6 位十六进制，供前端展示 GitHub 风格标签 */
+  const labelRecords = (issue) => {
+    if (!Array.isArray(issue.labels)) return []
+    const out = []
+    for (const l of issue.labels) {
+      const name = typeof l === 'string' ? l : l && l.name
+      if (!name) continue
+      const raw = typeof l === 'object' && l && l.color != null ? String(l.color).replace(/^#/, '') : ''
+      const color = /^[0-9a-fA-F]{6}$/.test(raw) ? raw.toLowerCase() : 'ededed'
+      out.push({ name: String(name), color })
+    }
+    return out
+  }
 
   for (const issue of issues) {
     const fn = `issue-${issue.number}.md`
-    const fp = path.join(blogDir, fn)
+    const fp = path.join(docsDir, fn)
     const title = issue.title || `第 ${issue.number} 号 Issue`
     const date = toIsoDate(issue.created_at)
     const issueUrl = issue.html_url || `https://github.com/${owner}/${repo}/issues/${issue.number}`
-    const labels = labelNames(issue)
+    const labels = labelRecords(issue)
     const body = issue.body || ''
     const fm = [
       '---',
@@ -173,6 +181,7 @@ async function main() {
       `issueUrl: ${JSON.stringify(issueUrl)}`,
       `labels: ${JSON.stringify(labels)}`,
       'syncedFromIssue: true',
+      'layout: IssuePostLayout',
       'pageClass: blog-doc',
       '---',
       '',
@@ -187,8 +196,9 @@ async function main() {
   const postsMeta = issues.slice(0, previewN).map((issue) => ({
     title: issue.title || `第 ${issue.number} 号 Issue`,
     date: toIsoDate(issue.created_at),
-    path: `/blog/issue-${issue.number}`,
+    path: `/issue-${issue.number}`,
     issue: issue.number,
+    labels: labelRecords(issue),
   }))
 
   writeFile(
@@ -226,7 +236,7 @@ async function main() {
   writeFile(path.join(dataDir, 'home-repos.json'), JSON.stringify(repoCards, null, 2) + '\n')
 
   console.log('Synced', issues.length, 'issues,', repoCards.length, 'repos.')
-  console.log('Data written to docs/.vitepress/data/ and docs/blog/')
+  console.log('Data written to docs/.vitepress/data/ and docs/issue-*.md')
 }
 
 main().catch((err) => {

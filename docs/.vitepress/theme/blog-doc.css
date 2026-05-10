@@ -1,9 +1,19 @@
 /**
- * 博客正文页（依赖 pageClass: blog-doc + content-tokens.css）
+ * 同步 Issue 文章页（依赖 frontmatter：`layout: IssuePostLayout` + `pageClass: blog-doc` + content-tokens.css）
+ * 版心与正文挂载在 `IssuePostLayout.vue` 根节点 `.issue-post` 上，可在该组件内自由扩展结构。
  */
 
 .Layout.blog-doc #VPContent:not(.is-home) {
   background: var(--site-bg-canvas);
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+@media (min-width: 768px) {
+  .Layout.blog-doc #VPContent:not(.is-home) {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
 }
 
 @media (min-width: 960px) {
@@ -12,65 +22,71 @@
   }
 }
 
-.Layout.blog-doc .VPDoc {
-  padding: 20px 16px 56px;
-}
-
-@media (min-width: 768px) {
-  .Layout.blog-doc .VPDoc {
-    padding: 28px 24px 72px;
-  }
-}
-
-.Layout.blog-doc .VPDoc .content-container {
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: clamp(1.25rem, 3vw, 2rem) clamp(1.25rem, 4vw, 2.5rem) 2.25rem;
+.Layout.blog-doc .issue-post {
+  box-sizing: border-box;
+  max-width: 1200px;
+  margin: 20px auto 56px;
+  padding: clamp(1.25rem, 3vw, 2rem) clamp(1.25rem, 4vw, 2.5rem) clamp(2rem, 5vw, 3rem);
   border-radius: var(--site-radius-lg);
   border: 1px solid var(--site-border);
   background: var(--site-bg-card);
   box-shadow: var(--site-shadow);
-}
-
-.Layout.blog-doc .aside-container {
-  font-size: 0.8125rem;
-}
-
-.Layout.blog-doc .VPDocAsideOutline .content {
-  border-left-color: var(--site-border);
-}
-
-.Layout.blog-doc .VPDocAsideOutline .outline-title {
-  color: var(--site-text-heading);
-  font-weight: 600;
-}
-
-.Layout.blog-doc .VPDocAsideOutline .outline-marker {
-  background-color: var(--site-accent);
-}
-
-.Layout.blog-doc .VPDocAsideOutline .outline-link {
-  color: var(--site-text-muted);
-}
-
-.Layout.blog-doc .VPDocAsideOutline .outline-link:hover {
-  color: var(--site-text-body);
-}
-
-.Layout.blog-doc .VPDocAsideOutline .outline-link.active {
-  color: var(--site-accent);
-  font-weight: 600;
-}
-
-.Layout.blog-doc .vp-doc {
   font-size: 1rem;
   line-height: 1.85;
   letter-spacing: 0.02em;
   color: var(--site-text-body);
 }
 
-.Layout.blog-doc .vp-doc > h1 {
+@media (min-width: 768px) {
+  .Layout.blog-doc .issue-post {
+    margin-top: 28px;
+    margin-bottom: 72px;
+  }
+}
+
+.Layout.blog-doc .issue-post__source {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+}
+
+.Layout.blog-doc .issue-post .issue-post__source a {
+  color: var(--site-text-muted);
+  text-decoration: none;
+}
+
+.Layout.blog-doc .issue-post .issue-post__source a:hover {
+  color: var(--site-accent-hover);
+  text-decoration: underline;
+}
+
+.Layout.blog-doc .issue-post-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+
+.Layout.blog-doc .issue-post-label-item {
+  display: inline-flex;
+}
+
+.Layout.blog-doc .issue-post-label {
+  display: inline-block;
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.35;
+  border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+}
+
+.Layout.blog-doc .issue-post h1:first-of-type {
   margin-top: 0;
   margin-bottom: 0.75rem;
   padding-bottom: 0;
@@ -82,7 +98,7 @@
   color: var(--site-text-heading);
 }
 
-.Layout.blog-doc .vp-doc > h1::after {
+.Layout.blog-doc .issue-post h1:first-of-type::after {
   content: '';
   display: block;
   height: 1px;
@@ -96,7 +112,7 @@
   );
 }
 
-.Layout.blog-doc .vp-doc h2 {
+.Layout.blog-doc .issue-post h2 {
   margin-top: 2rem;
   margin-bottom: 0.65rem;
   padding-top: 0;
@@ -109,7 +125,7 @@
   letter-spacing: -0.015em;
 }
 
-.Layout.blog-doc .vp-doc h3 {
+.Layout.blog-doc .issue-post h3 {
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
   font-size: 1.0625rem;
@@ -117,37 +133,37 @@
   color: var(--site-text-heading);
 }
 
-.Layout.blog-doc .vp-doc p {
+.Layout.blog-doc .issue-post p {
   margin: 0.75em 0;
 }
 
-.Layout.blog-doc .vp-doc ul,
-.Layout.blog-doc .vp-doc ol {
+.Layout.blog-doc .issue-post ul,
+.Layout.blog-doc .issue-post ol {
   margin: 0.65em 0;
   padding-left: 1.25em;
 }
 
-.Layout.blog-doc .vp-doc li {
+.Layout.blog-doc .issue-post li {
   margin: 0.3em 0;
 }
 
-.Layout.blog-doc .vp-doc a {
+.Layout.blog-doc .issue-post a {
   color: var(--site-accent);
   text-decoration: none;
   text-underline-offset: 3px;
 }
 
-.Layout.blog-doc .vp-doc a:hover {
+.Layout.blog-doc .issue-post a:hover {
   color: var(--site-accent-hover);
   text-decoration: underline;
 }
 
-.Layout.blog-doc .vp-doc strong {
+.Layout.blog-doc .issue-post strong {
   color: var(--site-text-heading);
   font-weight: 600;
 }
 
-.Layout.blog-doc .vp-doc blockquote {
+.Layout.blog-doc .issue-post blockquote {
   margin: 1.15rem 0;
   padding: 0.75rem 1rem;
   border-left: 3px solid var(--site-accent);
@@ -156,7 +172,7 @@
   color: var(--site-text-body);
 }
 
-.Layout.blog-doc .vp-doc :not(pre) > code {
+.Layout.blog-doc .issue-post :not(pre) > code {
   padding: 0.12em 0.4em;
   border-radius: var(--site-radius);
   font-size: 0.875em;
@@ -166,41 +182,13 @@
   color: var(--site-chip-text);
 }
 
-.Layout.blog-doc .vp-doc div[class*='language-'] {
+.Layout.blog-doc .issue-post div[class*='language-'] {
   border-radius: var(--site-radius-lg);
   border: 1px solid var(--site-border);
   box-shadow: none;
 }
 
-.Layout.blog-doc .vp-doc img {
+.Layout.blog-doc .issue-post img {
   border-radius: var(--site-radius-lg);
   border: 1px solid var(--site-border);
-}
-
-.Layout.blog-doc .VPDocFooter {
-  margin-top: 2rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--site-border);
-}
-
-.Layout.blog-doc .VPDocFooter .pager-link {
-  border: 1px solid var(--site-border);
-  border-radius: var(--site-radius);
-  background: var(--site-bg-hover);
-  transition:
-    border-color 0.15s ease,
-    background 0.15s ease;
-}
-
-.Layout.blog-doc .VPDocFooter .pager-link:hover {
-  border-color: color-mix(in srgb, var(--site-accent) 40%, var(--site-border));
-  background: var(--site-bg-card);
-}
-
-.Layout.blog-doc .VPDocFooter .pager-link .title {
-  color: var(--site-text-heading);
-}
-
-.Layout.blog-doc .VPDocFooter .pager-link .desc {
-  color: var(--site-text-muted);
 }

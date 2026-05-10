@@ -4,6 +4,7 @@ import { withBase } from 'vitepress'
 import githubContent from '../../github-content.json'
 import homeRepos from '../../data/home-repos.json'
 import homePosts from '../../data/home-posts.json'
+import { normalizeIssueLabels, labelTextColor } from '../issue-labels'
 
 const profile = githubContent.profile
 const ghUser = profile.githubUsername || githubContent.owner
@@ -11,10 +12,22 @@ const avatarUrl = `https://github.com/${ghUser}.png?size=128`
 
 const repos = computed(() => (Array.isArray(homeRepos) ? homeRepos : []))
 
+type HomePost = {
+  title: string
+  date: string
+  path: string
+  issue: number
+  labels?: unknown
+}
+
 const posts = computed(() => {
-  const p = (homePosts as { posts?: { title: string; date: string; path: string; issue: number }[] }).posts
+  const p = (homePosts as { posts?: HomePost[] }).posts
   return Array.isArray(p) ? p : []
 })
+
+function postLabels(post: HomePost) {
+  return normalizeIssueLabels(post.labels)
+}
 
 const langColor: Record<string, string> = {
   TypeScript: '#3178c6',
@@ -128,6 +141,25 @@ const emptyPostsHint = computed(() => {
             </div>
             <div class="post-entry-body">
               <h3 class="post-entry-title">{{ post.title }}</h3>
+              <div
+                v-if="postLabels(post).length"
+                class="post-entry-labels"
+                role="list"
+                aria-label="标签"
+              >
+                <span
+                  v-for="lb in postLabels(post)"
+                  :key="lb.name"
+                  class="post-entry-label-wrap"
+                  role="listitem"
+                >
+                  <span
+                    class="post-entry-label"
+                    :style="{ backgroundColor: `#${lb.color}`, color: labelTextColor(lb.color) }"
+                    >{{ lb.name }}</span
+                  >
+                </span>
+              </div>
               <div class="post-entry-meta">
                 <span class="post-entry-author">{{ profile.displayName }}</span>
                 <span class="post-entry-sep">·</span>
@@ -371,6 +403,33 @@ const emptyPostsHint = computed(() => {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+.post-entry-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0 0 0.5rem;
+  list-style: none;
+  padding: 0;
+}
+
+.post-entry-label-wrap {
+  display: inline-flex;
+}
+
+.post-entry-label {
+  display: inline-block;
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0.12rem 0.45rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.35;
+  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
 }
 
 .post-entry-meta {
