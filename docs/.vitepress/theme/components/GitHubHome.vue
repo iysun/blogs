@@ -115,12 +115,29 @@ const emptyPostsHint = computed(() => {
       </ul>
     </section>
 
-    <section v-if="posts.length" class="gh-section">
-      <h2 class="gh-section-title">最新文章</h2>
-      <ul class="gh-post-list">
-        <li v-for="post in posts" :key="post.issue" class="gh-post-row">
-          <a :href="withBase(post.path)" class="gh-post-title">{{ post.title }}</a>
-          <span class="gh-post-date">{{ post.date }}</span>
+    <section v-if="posts.length" class="gh-section post-feed-section">
+      <header class="post-feed-header">
+        <h2 class="post-feed-heading">文章列表</h2>
+        <span class="post-feed-subheading">最新发布</span>
+      </header>
+      <ul class="post-entry-list" role="list">
+        <li v-for="post in posts" :key="post.issue" class="post-entry">
+          <a :href="withBase(post.path)" class="post-entry-card">
+            <div class="post-entry-aside">
+              <img class="post-entry-avatar" :src="avatarUrl" width="48" height="48" :alt="ghUser" />
+            </div>
+            <div class="post-entry-body">
+              <h3 class="post-entry-title">{{ post.title }}</h3>
+              <div class="post-entry-meta">
+                <span class="post-entry-author">{{ profile.displayName }}</span>
+                <span class="post-entry-sep">·</span>
+                <time class="post-entry-time" :datetime="post.date">{{ post.date }}</time>
+                <span class="post-entry-sep">·</span>
+                <span class="post-entry-chip">#{{ post.issue }}</span>
+              </div>
+            </div>
+            <span class="post-entry-arrow" aria-hidden="true">›</span>
+          </a>
         </li>
       </ul>
     </section>
@@ -254,41 +271,155 @@ const emptyPostsHint = computed(() => {
   border-radius: 50%;
 }
 
-.gh-post-list {
+/* 首页文章流 */
+.post-feed-section {
+  padding: 1.25rem 1.25rem 1.5rem;
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
+  border-radius: var(--site-radius-lg);
+  background: var(--site-bg-canvas);
+  border: 1px solid var(--site-border);
+}
+
+.post-feed-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding-left: 0.15rem;
+}
+
+.post-feed-heading {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--site-text-heading);
+  padding-left: 0.65rem;
+  border-left: 4px solid var(--site-accent);
+  line-height: 1.2;
+}
+
+.post-feed-subheading {
+  font-size: 0.8125rem;
+  color: var(--site-text-muted);
+}
+
+.post-entry-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.post-entry-card {
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  text-decoration: none;
+  color: inherit;
+  background: var(--site-bg-card);
+  border: 1px solid var(--site-border);
+  border-radius: var(--site-radius-lg);
+  box-shadow: var(--site-shadow);
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.post-entry-card:hover {
+  border-color: color-mix(in srgb, var(--site-accent) 35%, var(--site-border));
+  box-shadow: var(--site-shadow-hover);
+  transform: translateY(-1px);
+}
+
+.post-entry-card:hover .post-entry-title {
+  color: var(--site-accent);
+}
+
+.post-entry-aside {
+  flex-shrink: 0;
+  padding-top: 0.1rem;
+}
+
+.post-entry-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--site-border);
+  background: var(--site-chip-bg);
+}
+
+.post-entry-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.post-entry-title {
+  margin: 0 0 0.45rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--site-text-heading);
+  letter-spacing: -0.01em;
+  transition: color 0.15s ease;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-.gh-post-row {
+.post-entry-meta {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 1rem;
-  padding: 0.65rem 1rem;
-  border-bottom: 1px solid var(--vp-c-divider);
-  background: var(--vp-c-bg-soft);
-}
-.gh-post-row:last-child {
-  border-bottom: none;
+  gap: 0.35rem;
+  font-size: 0.8125rem;
+  color: var(--site-text-muted);
 }
 
-.gh-post-title {
-  color: var(--vp-c-brand-1);
-  text-decoration: none;
+.post-entry-author {
+  color: var(--site-text-body);
   font-weight: 500;
 }
-.gh-post-title:hover {
-  text-decoration: underline;
+
+.post-entry-sep {
+  color: var(--site-text-muted);
+  user-select: none;
 }
 
-.gh-post-date {
-  font-size: 0.85rem;
-  color: var(--vp-c-text-3);
+.post-entry-time {
+  color: var(--site-text-muted);
+}
+
+.post-entry-chip {
+  padding: 0.1rem 0.45rem;
+  border-radius: 2px;
+  background: var(--site-chip-bg);
+  color: var(--site-chip-text);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.post-entry-arrow {
   flex-shrink: 0;
+  align-self: center;
+  font-size: 1.35rem;
+  font-weight: 300;
+  color: var(--site-text-muted);
+  opacity: 0.65;
+  transition:
+    transform 0.15s ease,
+    color 0.15s ease;
+}
+
+.post-entry-card:hover .post-entry-arrow {
+  color: var(--site-accent);
+  transform: translateX(2px);
 }
 
 .gh-muted {

@@ -1,0 +1,38 @@
+/**
+ * 站点内容区共用色板（首页文章流与博客正文）
+ */
+:root {
+  --site-accent: #1e80ff;
+  --site-accent-soft: color-mix(in srgb, #1e80ff 12%, transparent);
+  --site-accent-hover: #1171ee;
+  --site-bg-canvas: #f7f8fa;
+  --site-bg-card: #ffffff;
+  --site-bg-hover: #fafafa;
+  --site-text-heading: #252933;
+  --site-text-body: #515767;
+  --site-text-muted: #86909c;
+  --site-border: #e4e6eb;
+  --site-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --site-shadow-hover: 0 2px 12px 0 rgba(0, 0, 0, 0.08);
+  --site-chip-bg: #f2f3f5;
+  --site-chip-text: #515767;
+  --site-radius: 4px;
+  --site-radius-lg: 8px;
+}
+
+html.dark {
+  --site-accent: #3c9cff;
+  --site-accent-soft: color-mix(in srgb, #3c9cff 18%, transparent);
+  --site-accent-hover: #66b3ff;
+  --site-bg-canvas: #0f0f0f;
+  --site-bg-card: #1a1a1a;
+  --site-bg-hover: #222;
+  --site-text-heading: rgba(255, 255, 255, 0.92);
+  --site-text-body: rgba(255, 255, 255, 0.7);
+  --site-text-muted: rgba(255, 255, 255, 0.45);
+  --site-border: #2f2f2f;
+  --site-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.35);
+  --site-shadow-hover: 0 4px 16px 0 rgba(0, 0, 0, 0.45);
+  --site-chip-bg: #2a2a2a;
+  --site-chip-text: rgba(255, 255, 255, 0.65);
+}

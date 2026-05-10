@@ -84,7 +84,8 @@ pnpm content:sync
 | `docs/.vitepress/github-content.json` | Issues 与仓库卡片、首页资料的单一配置源 |
 | `docs/.vitepress/data/` | 同步生成的 JSON（随仓库提交） |
 | `docs/.vitepress/theme/` | 自定义主题（扩展默认主题） |
-| `docs/.vitepress/theme/blog-doc.css` | 博客文档页样式（需 frontmatter `pageClass: blog-doc`，同步脚本已写入） |
+| `docs/.vitepress/theme/content-tokens.css` | 内容区共用 CSS 变量（首页文章流与博客正文） |
+| `docs/.vitepress/theme/blog-doc.css` | 博客正文页样式（`pageClass: blog-doc`，使用 `content-tokens` 变量） |
 | `scripts/sync-github-content.mjs` | 同步脚本 |
 
 ## 部署
