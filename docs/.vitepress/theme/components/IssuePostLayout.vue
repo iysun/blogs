@@ -13,7 +13,7 @@ const labels = computed(() =>
 );
 
 const pager = computed(() => {
-  const issue = frontmatter.issue;
+  const issue = frontmatter.value.issue;
   if (issue == null || issue === "")
     return { prev: null as NavEntry | null, next: null as NavEntry | null };
   const key = String(issue);
@@ -61,33 +61,33 @@ const showFooter = computed(
         >
       </li>
     </ul>
-    <footer v-if="showFooter" class="issue-post-footer">
-      <a
-        v-if="pager.prev"
-        :href="withBase(pager.prev.path)"
-        class="issue-post-pager issue-post-pager--prev"
-      >
-        <span class="issue-post-pager__dir">上一篇</span>
-        <span class="issue-post-pager__title">{{ pager.prev.title }}</span>
-      </a>
-      <span
-        v-else
-        class="issue-post-pager issue-post-pager--empty"
-        aria-hidden="true"
-      />
-      <a
-        v-if="pager.next"
-        :href="withBase(pager.next.path)"
-        class="issue-post-pager issue-post-pager--next"
-      >
-        <span class="issue-post-pager__dir">下一篇</span>
-        <span class="issue-post-pager__title">{{ pager.next.title }}</span>
-      </a>
-      <span
-        v-else
-        class="issue-post-pager issue-post-pager--empty"
-        aria-hidden="true"
-      />
-    </footer>
   </div>
+  <footer v-if="showFooter" class="issue-post-footer">
+    <a
+      v-if="pager.prev"
+      :href="withBase(pager.prev.path)"
+      class="issue-post-pager issue-post-pager--prev"
+    >
+      <span class="issue-post-pager__dir">上一篇</span>
+      <span class="issue-post-pager__title">{{ pager.prev.title }}</span>
+    </a>
+    <span
+      v-else
+      class="issue-post-pager issue-post-pager--empty"
+      aria-hidden="true"
+    />
+    <a
+      v-if="pager.next"
+      :href="withBase(pager.next.path)"
+      class="issue-post-pager issue-post-pager--next"
+    >
+      <span class="issue-post-pager__dir">下一篇</span>
+      <span class="issue-post-pager__title">{{ pager.next.title }}</span>
+    </a>
+    <span
+      v-else
+      class="issue-post-pager issue-post-pager--empty"
+      aria-hidden="true"
+    />
+  </footer>
 </template>

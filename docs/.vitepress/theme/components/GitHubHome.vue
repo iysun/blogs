@@ -140,25 +140,27 @@ const emptyPostsHint = computed(() => {
               <img class="post-entry-avatar" :src="avatarUrl" width="48" height="48" :alt="ghUser" />
             </div>
             <div class="post-entry-body">
-              <h3 class="post-entry-title">{{ post.title }}</h3>
-              <div
-                v-if="postLabels(post).length"
-                class="post-entry-labels"
-                role="list"
-                aria-label="标签"
-              >
-                <span
-                  v-for="lb in postLabels(post)"
-                  :key="lb.name"
-                  class="post-entry-label-wrap"
-                  role="listitem"
+              <div class="post-entry-header-flex">
+                <h3 class="post-entry-title">{{ post.title }}</h3>
+                <div
+                  v-if="postLabels(post).length"
+                  class="post-entry-labels"
+                  role="list"
+                  aria-label="标签"
                 >
                   <span
-                    class="post-entry-label"
-                    :style="{ backgroundColor: `#${lb.color}`, color: labelTextColor(lb.color) }"
-                    >{{ lb.name }}</span
+                    v-for="lb in postLabels(post)"
+                    :key="lb.name"
+                    class="post-entry-label-wrap"
+                    role="listitem"
                   >
-                </span>
+                    <span
+                      class="post-entry-label"
+                      :style="{ backgroundColor: `#${lb.color}`, color: labelTextColor(lb.color) }"
+                      >{{ lb.name }}</span
+                    >
+                  </span>
+                </div>
               </div>
               <div class="post-entry-meta">
                 <span class="post-entry-author">{{ profile.displayName }}</span>
@@ -366,6 +368,12 @@ const emptyPostsHint = computed(() => {
   border-color: color-mix(in srgb, var(--site-accent) 35%, var(--site-border));
   box-shadow: var(--site-shadow-hover);
   transform: translateY(-1px);
+}
+
+.post-entry-header-flex {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .post-entry-card:hover .post-entry-title {
