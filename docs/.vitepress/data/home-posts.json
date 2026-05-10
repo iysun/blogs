@@ -1,4 +1,11 @@
 {
-  "posts": [],
-  "updatedAt": null
+  "posts": [
+    {
+      "title": "使用 github issue 写博客",
+      "date": "2026-05-10",
+      "path": "/blog/issue-1",
+      "issue": 1
+    }
+  ],
+  "updatedAt": "2026-05-10T14:03:30.069Z"
 }
