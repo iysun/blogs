@@ -1,31 +1,45 @@
 import { defineConfig } from 'vitepress'
+import githubContent from './github-content.json'
+import blogSidebar from './data/blog-sidebar.json'
 
-const base = '/blogs/'
+const baseRaw = typeof githubContent.base === 'string' ? githubContent.base : '/blogs/'
+const base = baseRaw.endsWith('/') ? baseRaw : `${baseRaw}/`
+const ghProfile = githubContent.profile
+const ghUser = ghProfile?.githubUsername || githubContent.owner
+
+const examplesSidebar = [
+  {
+    text: 'Examples',
+    items: [
+      { text: 'Markdown Examples', link: '/markdown-examples' },
+      { text: 'Runtime API Examples', link: '/api-examples' },
+    ],
+  },
+]
+
+const blogItems = [
+  { text: 'Overview', link: '/blog/' },
+  ...(Array.isArray(blogSidebar.items) ? blogSidebar.items : []),
+]
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  base: base,
-  title: "Eason Site",
-  description: "Eason Blogs",
+  base,
+  title: 'Eason Site',
+  description: 'Eason Blogs',
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' }
+      { text: 'Blog', link: '/blog/' },
+      { text: 'Examples', link: '/markdown-examples' },
     ],
 
-    sidebar: [
-      {
-        text: 'Examples',
-        items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
-        ]
-      }
-    ],
+    sidebar: {
+      '/blog/': blogItems,
+      '/markdown-examples': examplesSidebar,
+      '/api-examples': examplesSidebar,
+    },
 
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/vuejs/vitepress' }
-    ]
-  }
+    socialLinks: [{ icon: 'github', link: `https://github.com/${ghUser}` }],
+  },
 })

@@ -1,0 +1,13 @@
+{
+  "owner": "YOUR_GITHUB_USERNAME",
+  "repo": "blogs",
+  "issueLabel": "blog",
+  "base": "/blogs/",
+  "pinnedRepos": ["YOUR_GITHUB_USERNAME/blogs"],
+  "profile": {
+    "displayName": "Eason",
+    "bio": "Personal site and notes.",
+    "githubUsername": "YOUR_GITHUB_USERNAME"
+  },
+  "postsPreviewLimit": 8
+}

@@ -3,6 +3,7 @@
     "vitepress": "2.0.0-alpha.16"
   },
   "scripts": {
+    "content:sync": "node scripts/sync-github-content.mjs",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
