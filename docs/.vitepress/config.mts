@@ -10,10 +10,10 @@ const ghUser = ghProfile?.githubUsername || githubContent.owner
 export default defineConfig({
   lang: 'zh-CN',
   base,
-  title: 'Eason 的博客',
+  title: 'iysun 的博客',
   description: '基于 GitHub Issues 与 VitePress 的个人站点',
   themeConfig: {
-    siteTitle: 'Eason 的博客',
+    siteTitle: 'iysun 的博客',
 
     nav: [{ text: '首页', link: '/' }],
 
