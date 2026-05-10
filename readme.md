@@ -1,6 +1,6 @@
 # Eason Blog
 
-基于 VitePress 构建的个人博客站点：首页为 GitHub 风格简介与仓库卡片，文章由仓库 Issues（指定 label）经**手动同步**生成到仓库内的 Markdown 与 JSON，**构建不会访问 GitHub**。
+基于 VitePress 构建的个人博客站点（`lang: zh-CN`）：首页为 GitHub 风格简介与仓库卡片，文章由仓库 Issues 经**手动同步**生成到仓库内的 Markdown 与 JSON，**构建不会访问 GitHub**。
 
 ## 快速开始
 
@@ -36,11 +36,16 @@ pnpm docs:preview
 
 1. 编辑 [`docs/.vitepress/github-content.json`](docs/.vitepress/github-content.json)：
    - `owner` / `repo`：目标仓库（默认占位为 `YOUR_GITHUB_USERNAME`，请改成你的账号与仓库名）。
-   - `issueLabel`：只有带该 label 的 Issue 会生成文章（例如 `blog`）。
-   - `pinnedRepos`：首页「Pinned repositories」展示的 `owner/repo` 列表，可为多个。
+   - `issueLabel`：可选。可为**字符串**、**字符串数组**，或留空/省略。
+     - 非空时：请求 GitHub API 的 `labels` 参数（多个时用逗号拼接）；返回带**其中任意一个** label 的 Issue（与 GitHub 列表行为一致）。
+     - 字符串里若含英文逗号，会按逗号拆成多个 label 名（与数组写法等价）。
+     - 示例：`"blog"`、`["blog","publish"]`、`"blog, draft"`。
+     - **留空或省略**则拉取列表中的全部 Issue（仍排除 PR）。随后还会应用下面的作者过滤。
+   - `issuesOnlyRepoOwner`：可选，**默认 `true`**。为 `true` 时只保留 **创建者登录名等于 `owner`** 的 Issue（即仓库所属用户/组织账号本人发的 Issue）；设为 `false` 时保留所有作者的 Issue。
+   - `pinnedRepos`：首页「置顶仓库」区块展示的 `owner/repo` 列表，可为多个。
    - `profile`：首页展示用的昵称、简介、`githubUsername`（用于头像与 GitHub 链接）。
    - `base`：须与 VitePress 的 `base` 一致（当前为 `/blogs/`）。
-2. 在 GitHub 上给要发布的 Issue 打上上述 label；取消发布可去掉 label 后再次同步（会删除对应本地 `issue-*.md`）。
+2. 若使用 label：在 GitHub 上给要发布的 Issue 打上该 label；取消发布可去掉 label 后再次同步（会删除对应本地 `issue-*.md`）。若未使用 label，同步结果会随「当前 API 返回的、且通过作者过滤的」Issue 集合变化。
 3. 在仓库根目录执行：
 
 ```bash
@@ -78,6 +83,7 @@ pnpm content:sync
 | `docs/.vitepress/github-content.json` | Issues 与仓库卡片、首页资料的单一配置源 |
 | `docs/.vitepress/data/` | 同步生成的 JSON（随仓库提交） |
 | `docs/.vitepress/theme/` | 自定义主题（扩展默认主题） |
+| `docs/.vitepress/theme/blog-doc.css` | 博客文档页样式（需 frontmatter `pageClass: blog-doc`，同步脚本已写入） |
 | `scripts/sync-github-content.mjs` | 同步脚本 |
 
 ## 部署

@@ -1,0 +1,123 @@
+/**
+ * 博客文档页主题：依赖 frontmatter `pageClass: blog-doc`（由 Layout 根节点承载）
+ */
+
+/* 主内容区：轻量层次与留白 */
+.Layout.blog-doc #VPContent.has-sidebar {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--vp-c-bg) 96%, var(--vp-c-brand-1) 4%) 0%,
+    var(--vp-c-bg) 28%,
+    var(--vp-c-bg) 100%
+  );
+}
+
+@media (min-width: 960px) {
+  .Layout.blog-doc #VPContent.has-sidebar {
+    min-height: calc(100vh - var(--vp-nav-height));
+  }
+}
+
+/* 正文卡片：阅读宽度与柔和边界 */
+.Layout.blog-doc .VPDoc .content-container {
+  border-radius: 14px;
+  border: 1px solid var(--vp-c-divider);
+  background: color-mix(in srgb, var(--vp-c-bg) 92%, var(--vp-c-bg-soft) 8%);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--vp-c-bg) 40%, #000 6%);
+  padding: clamp(1.25rem, 2vw, 2rem) clamp(1.25rem, 3vw, 2.5rem) 2.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.dark .Layout.blog-doc .VPDoc .content-container {
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--vp-c-bg) 50%, #000 35%);
+}
+
+/* 排版 */
+.Layout.blog-doc .vp-doc {
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+  color: var(--vp-c-text-1);
+}
+
+.Layout.blog-doc .vp-doc > h1 {
+  margin-top: 0;
+  padding-bottom: 0.6rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--vp-c-divider) 85%, var(--vp-c-brand-1) 15%);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.Layout.blog-doc .vp-doc h2 {
+  margin-top: 2.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--vp-c-divider);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.Layout.blog-doc .vp-doc h3 {
+  margin-top: 1.75rem;
+  font-weight: 600;
+}
+
+.Layout.blog-doc .vp-doc p {
+  margin: 0.85em 0;
+}
+
+.Layout.blog-doc .vp-doc ul,
+.Layout.blog-doc .vp-doc ol {
+  margin: 0.75em 0;
+  padding-left: 1.35em;
+}
+
+.Layout.blog-doc .vp-doc li {
+  margin: 0.35em 0;
+}
+
+.Layout.blog-doc .vp-doc a {
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.Layout.blog-doc .vp-doc blockquote {
+  margin: 1.25rem 0;
+  padding: 0.65rem 1rem 0.65rem 1rem;
+  border-left: 3px solid color-mix(in srgb, var(--vp-c-brand-1) 55%, transparent);
+  border-radius: 0 8px 8px 0;
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-2);
+}
+
+.Layout.blog-doc .vp-doc :not(pre) > code {
+  padding: 0.15em 0.45em;
+  border-radius: 6px;
+  font-size: 0.9em;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-divider);
+}
+
+.Layout.blog-doc .vp-doc div[class*='language-'] {
+  border-radius: 10px;
+  border: 1px solid var(--vp-c-divider);
+  box-shadow: none;
+}
+
+.Layout.blog-doc .vp-doc img {
+  border-radius: 10px;
+  border: 1px solid var(--vp-c-divider);
+}
+
+/* 侧栏：与正文区略作区分 */
+.Layout.blog-doc .VPSidebar .nav {
+  padding-top: 0.25rem;
+}
+
+/* 底部上一篇/下一篇区域略收紧 */
+.Layout.blog-doc .VPDoc .content-container .VPDocFooter {
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px dashed var(--vp-c-divider);
+}

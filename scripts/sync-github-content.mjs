@@ -160,7 +160,7 @@ async function main() {
   for (const issue of issues) {
     const fn = `issue-${issue.number}.md`
     const fp = path.join(blogDir, fn)
-    const title = issue.title || `Issue ${issue.number}`
+    const title = issue.title || `第 ${issue.number} 号 Issue`
     const date = toIsoDate(issue.created_at)
     const issueUrl = issue.html_url || `https://github.com/${owner}/${repo}/issues/${issue.number}`
     const labels = labelNames(issue)
@@ -173,6 +173,7 @@ async function main() {
       `issueUrl: ${JSON.stringify(issueUrl)}`,
       `labels: ${JSON.stringify(labels)}`,
       'syncedFromIssue: true',
+      'pageClass: blog-doc',
       '---',
       '',
       body.trimEnd(),
@@ -185,7 +186,7 @@ async function main() {
   const previewN = Number(postsPreviewLimit) > 0 ? Number(postsPreviewLimit) : 8
   const baseNorm = typeof base === 'string' && base.endsWith('/') ? base : `${base || '/'}/`
   const postsMeta = issues.slice(0, previewN).map((issue) => ({
-    title: issue.title || `Issue ${issue.number}`,
+    title: issue.title || `第 ${issue.number} 号 Issue`,
     date: toIsoDate(issue.created_at),
     path: `/blog/issue-${issue.number}`,
     issue: issue.number,
@@ -204,7 +205,7 @@ async function main() {
   )
 
   const sidebarItems = issues.map((issue) => ({
-    text: issue.title || `Issue ${issue.number}`,
+    text: issue.title || `第 ${issue.number} 号 Issue`,
     link: `/blog/issue-${issue.number}`,
   }))
   writeFile(path.join(dataDir, 'blog-sidebar.json'), JSON.stringify({ items: sidebarItems }, null, 2) + '\n')
@@ -233,30 +234,35 @@ async function main() {
 
   const blogIndexLines = [
     '---',
-    'title: Blog',
-    'description: Posts synced from GitHub Issues',
+    'title: 博客',
+    'description: 由 GitHub Issues 同步的文章',
+    'pageClass: blog-doc',
     '---',
     '',
-    '# Blog',
+    '# 博客',
     '',
     issueLabelsApi
-      ? 'Posts below are generated from GitHub Issues with **any** of labels: ' +
-          issueLabelsList.map((l) => '`' + l + '`').join(', ') +
-          ' (only issues created by `' +
-          owner +
-          '` when `issuesOnlyRepoOwner` is true). Re-run `pnpm content:sync` after editing issues.'
-      : 'Posts below are generated from GitHub Issues (no label filter; only issues created by `' +
-          owner +
-          '` when `issuesOnlyRepoOwner` is true). Re-run `pnpm content:sync` after editing issues.',
+      ? '以下文章由 GitHub Issues 同步，需至少包含以下**任一** label：' +
+          issueLabelsList.map((l) => '`' + l + '`').join('、') +
+          '。' +
+          (issuesOnlyRepoOwner
+            ? '默认仅包含仓库所有者 `' + owner + '` 创建的 Issue（可在配置中关闭 `issuesOnlyRepoOwner`）。'
+            : '') +
+          ' 修改 Issue 后请重新执行 `pnpm content:sync`。'
+      : '以下文章由 GitHub Issues 同步（未按 label 过滤）。' +
+          (issuesOnlyRepoOwner
+            ? '默认仅包含仓库所有者 `' + owner + '` 创建的 Issue（可在配置中关闭 `issuesOnlyRepoOwner`）。'
+            : '') +
+          ' 修改 Issue 后请重新执行 `pnpm content:sync`。',
     '',
-    '## All posts',
+    '## 全部文章',
     '',
   ]
   if (issues.length === 0) {
-    blogIndexLines.push('_No matching issues yet._', '')
+    blogIndexLines.push('_目前没有符合条件的 Issue。_', '')
   } else {
     for (const issue of issues) {
-      const t = issue.title || `Issue ${issue.number}`
+      const t = issue.title || `第 ${issue.number} 号 Issue`
       blogIndexLines.push(`- [${t}](./issue-${issue.number}.md)`, '')
     }
   }

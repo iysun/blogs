@@ -33,10 +33,28 @@ function colorFor(lang: string) {
   return langColor[lang] || '#8b949e'
 }
 
-const issueLabelTrim = computed(() => {
-  const l = (githubContent as { issueLabel?: string }).issueLabel
-  return typeof l === 'string' && l.trim() !== '' ? l.trim() : ''
-})
+function issueLabelsFromConfig(raw: unknown): string[] {
+  if (raw == null) return []
+  if (Array.isArray(raw)) {
+    return raw
+      .map((x) => (typeof x === 'string' ? x.trim() : String(x).trim()))
+      .filter(Boolean)
+  }
+  if (typeof raw === 'string') {
+    const t = raw.trim()
+    if (!t) return []
+    return t
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+  }
+  return []
+}
+
+/** 与同步脚本一致：非空则只展示带其中任一 label 的 Issue */
+const issueLabelsList = computed(() =>
+  issueLabelsFromConfig((githubContent as { issueLabel?: unknown }).issueLabel)
+)
 
 const onlyOwnerDefault = computed(() => {
   const v = (githubContent as { issuesOnlyRepoOwner?: boolean }).issuesOnlyRepoOwner
@@ -47,12 +65,13 @@ const emptyPostsHint = computed(() => {
   const o = githubContent.owner
   const r = githubContent.repo
   const ownerNote = onlyOwnerDefault.value
-    ? `Only issues created by ${o} are included (set issuesOnlyRepoOwner to false for all authors). `
+    ? `默认只同步 ${o} 本人创建的 Issue（将 issuesOnlyRepoOwner 设为 false 可包含所有作者）。`
     : ''
-  if (issueLabelTrim.value) {
-    return `${ownerNote}Add the ${issueLabelTrim.value} label to issues in ${o}/${r}, then run pnpm content:sync.`
+  if (issueLabelsList.value.length) {
+    const lbl = issueLabelsList.value.join('、')
+    return `${ownerNote}在 ${o}/${r} 中为 Issue 至少添加以下任一 label：${lbl}，然后执行 pnpm content:sync。`
   }
-  return `${ownerNote}Sync uses all issues in ${o}/${r} (no label filter). Run pnpm content:sync after creating issues.`
+  return `${ownerNote}在 ${o}/${r} 中创建 Issue 后执行 pnpm content:sync（当前未启用 label 过滤）。`
 })
 </script>
 
@@ -69,13 +88,13 @@ const emptyPostsHint = computed(() => {
           target="_blank"
           rel="noreferrer"
         >
-          @{{ ghUser }} on GitHub
+          在 GitHub 查看 @{{ ghUser }}
         </a>
       </div>
     </section>
 
     <section v-if="repos.length" class="gh-section">
-      <h2 class="gh-section-title">Pinned repositories</h2>
+      <h2 class="gh-section-title">置顶仓库</h2>
       <ul class="gh-repo-grid">
         <li v-for="r in repos" :key="r.fullName" class="gh-repo-card">
           <a :href="r.url" class="gh-repo-link" target="_blank" rel="noreferrer">
@@ -83,7 +102,7 @@ const emptyPostsHint = computed(() => {
               <span class="gh-repo-icon" aria-hidden="true">📦</span>
               <span class="gh-repo-name">{{ r.fullName }}</span>
             </div>
-            <p class="gh-repo-desc">{{ r.description || 'No description.' }}</p>
+            <p class="gh-repo-desc">{{ r.description || '暂无描述。' }}</p>
             <div class="gh-repo-meta">
               <span v-if="r.language" class="gh-lang">
                 <span class="gh-lang-dot" :style="{ background: colorFor(r.language) }" />
@@ -97,7 +116,7 @@ const emptyPostsHint = computed(() => {
     </section>
 
     <section v-if="posts.length" class="gh-section">
-      <h2 class="gh-section-title">Latest from the blog</h2>
+      <h2 class="gh-section-title">最新文章</h2>
       <ul class="gh-post-list">
         <li v-for="post in posts" :key="post.issue" class="gh-post-row">
           <a :href="withBase(post.path)" class="gh-post-title">{{ post.title }}</a>
@@ -105,12 +124,12 @@ const emptyPostsHint = computed(() => {
         </li>
       </ul>
       <p class="gh-more">
-        <a :href="withBase('/blog/')" class="gh-inline-link">View all posts →</a>
+        <a :href="withBase('/blog/')" class="gh-inline-link">查看全部文章 →</a>
       </p>
     </section>
 
     <section v-else class="gh-section gh-muted">
-      <p>No posts yet. {{ emptyPostsHint }}</p>
+      <p>暂无文章。{{ emptyPostsHint }}</p>
     </section>
   </div>
 </template>
