@@ -3,8 +3,9 @@ title: "使用 github issue 写博客"
 date: 2026-05-10
 issue: 1
 issueUrl: "https://github.com/iysun/blogs/issues/1"
-labels: []
+labels: [{"name":"blog","color":"ededed"}]
 syncedFromIssue: true
+layout: IssuePostLayout
 pageClass: blog-doc
 ---
 
