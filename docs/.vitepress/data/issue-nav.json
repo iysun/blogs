@@ -2,8 +2,20 @@
   "byIssue": {
     "1": {
       "prev": null,
+      "next": {
+        "issue": 2,
+        "path": "/issue-2",
+        "title": "为什么用 github issue 写blog"
+      }
+    },
+    "2": {
+      "prev": {
+        "issue": 1,
+        "path": "/issue-1",
+        "title": "使用 github issue 写博客"
+      },
       "next": null
     }
   },
-  "updatedAt": "2026-05-10T00:00:00.000Z"
+  "updatedAt": "2026-05-10T15:56:20.667Z"
 }

@@ -1,12 +1,24 @@
 {
   "posts": [
     {
+      "title": "为什么用 github issue 写blog",
+      "date": "2026-05-10",
+      "path": "/issue-2",
+      "issue": 2,
+      "labels": []
+    },
+    {
       "title": "使用 github issue 写博客",
       "date": "2026-05-10",
       "path": "/issue-1",
       "issue": 1,
-      "labels": [{ "name": "blog", "color": "ededed" }]
+      "labels": [
+        {
+          "name": "blog",
+          "color": "d7cdfe"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-05-10T15:29:12.300Z"
+  "updatedAt": "2026-05-10T15:56:20.667Z"
 }
