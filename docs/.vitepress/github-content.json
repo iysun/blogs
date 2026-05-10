@@ -1,13 +1,13 @@
 {
-  "owner": "YOUR_GITHUB_USERNAME",
+  "owner": "iysun",
   "repo": "blogs",
   "issueLabel": "blog",
   "base": "/blogs/",
-  "pinnedRepos": ["YOUR_GITHUB_USERNAME/blogs"],
+  "pinnedRepos": ["iysun/blogs"],
   "profile": {
     "displayName": "Eason",
     "bio": "Personal site and notes.",
-    "githubUsername": "YOUR_GITHUB_USERNAME"
+    "githubUsername": "iysun"
   },
   "postsPreviewLimit": 8
 }
