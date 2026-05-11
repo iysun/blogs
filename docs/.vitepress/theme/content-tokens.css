@@ -109,6 +109,31 @@ html.dark {
   --site-chip-border: #262626;
 }
 
+/* Issue 标签 — 固定中性药丸，与 chip / 留白体系一致（不随 GitHub label 色变化） */
+.site-issue-label {
+  box-sizing: border-box;
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  border-radius: var(--site-radius-full);
+  color: var(--site-chip-text);
+  background-color: var(--site-accent-soft);
+  border: 1px solid var(--site-chip-border);
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.site-issue-label:hover {
+  background-color: var(--site-chip-bg-hover);
+  border-color: var(--site-border-strong);
+  color: var(--site-text-heading);
+}
+
 /* 语言颜色 - 保持 */
 :root {
   --lang-typescript: #3178c6;

@@ -4,7 +4,7 @@ import { withBase } from 'vitepress'
 import githubContent from '../../github-content.json'
 import homeRepos from '../../data/home-repos.json'
 import homePosts from '../../data/home-posts.json'
-import { normalizeIssueLabels, labelTextColor } from '../issue-labels'
+import { normalizeIssueLabels } from '../issue-labels'
 
 const profile = githubContent.profile
 const ghUser = profile.githubUsername || githubContent.owner
@@ -146,12 +146,7 @@ const formatDate = (dateStr: string) => {
             <div class="post-main">
               <h3 class="post-title">{{ post.title }}</h3>
               <div v-if="postLabels(post).length" class="post-labels">
-                <span
-                  v-for="lb in postLabels(post)"
-                  :key="lb.name"
-                  class="post-label"
-                  :style="{ color: `#${lb.color}` }"
-                >
+                <span v-for="lb in postLabels(post)" :key="lb.name" class="site-issue-label">
                   {{ lb.name }}
                 </span>
               </div>
@@ -405,12 +400,6 @@ const formatDate = (dateStr: string) => {
 .post-labels {
   display: flex;
   gap: 0.75rem;
-}
-
-.post-label {
-  font-size: 0.75rem;
-  font-weight: 500;
-  opacity: 0.7;
 }
 
 .post-meta {

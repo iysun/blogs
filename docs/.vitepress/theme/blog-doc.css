@@ -46,36 +46,17 @@
   color: var(--site-text-heading);
 }
 
-/* 标签 - 极简边框风格 */
+/* 标签列表布局（外观见全局 `.site-issue-label`） */
 .Layout.blog-doc .issue-post-labels {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin: 0 0 1rem;
   padding: 0;
   list-style: none;
 }
 
 .Layout.blog-doc .issue-post-label-item {
   display: inline-flex;
-}
-
-.Layout.blog-doc .issue-post-label {
-  display: inline-block;
-  padding: 0.25rem 0.625rem;
-  font-size: 0.75rem;
-  font-weight: 500;
-  line-height: 1;
-  border-radius: var(--site-radius);
-  border: 1px solid var(--site-chip-border);
-  background: var(--site-chip-bg);
-  color: var(--site-chip-text);
-  transition: all var(--transition-fast);
-}
-
-.Layout.blog-doc .issue-post-label:hover {
-  background: var(--site-chip-bg-hover);
-  border-color: var(--site-border-strong);
 }
 
 /* 文章标题 */

@@ -1,0 +1,11 @@
+node_modules
+.pnpm-store
+
+docs/.vitepress/dist
+docs/.vitepress/cache
+docs/.vitepress/theme/cache
+
+dist
+.output
+
+pnpm-lock.yaml
