@@ -43,7 +43,7 @@ const langColor: Record<string, string> = {
 }
 
 function colorFor(lang: string) {
-  return langColor[lang] || '#8b949e'
+  return langColor[lang] || '#737373'
 }
 
 function issueLabelsFromConfig(raw: unknown): string[] {
@@ -64,7 +64,6 @@ function issueLabelsFromConfig(raw: unknown): string[] {
   return []
 }
 
-/** 与同步脚本一致：非空则只展示带其中任一 label 的 Issue */
 const issueLabelsList = computed(() =>
   issueLabelsFromConfig((githubContent as { issueLabel?: unknown }).issueLabel)
 )
@@ -86,416 +85,444 @@ const emptyPostsHint = computed(() => {
   }
   return `${ownerNote}在 ${o}/${r} 中创建 Issue 后执行 pnpm content:sync（当前未启用 label 过滤）。`
 })
+
+const formatDate = (dateStr: string) => {
+  const date = new Date(dateStr)
+  return new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  }).format(date).replace(/\//g, '.')
+}
 </script>
 
 <template>
   <div class="gh-home">
-    <section class="gh-profile">
-      <img class="gh-avatar" :src="avatarUrl" width="120" height="120" :alt="ghUser" />
-      <div class="gh-profile-text">
-        <h1 class="gh-name">{{ profile.displayName }}</h1>
-        <p class="gh-bio">{{ profile.bio }}</p>
-        <a
-          class="gh-profile-link"
-          :href="`https://github.com/${ghUser}`"
-          target="_blank"
-          rel="noreferrer"
-        >
-          在 GitHub 查看 @{{ ghUser }}
-        </a>
+    <!-- 极简个人信息区 - 大量留白 -->
+    <header class="gh-profile">
+      <div class="gh-profile-inner">
+        <img class="gh-avatar" :src="avatarUrl" width="64" height="64" :alt="ghUser" />
+        <div class="gh-profile-info">
+          <h1 class="gh-name">{{ profile.displayName }}</h1>
+          <p class="gh-bio">{{ profile.bio }}</p>
+        </div>
       </div>
-    </section>
+      <a
+        class="gh-profile-link"
+        :href="`https://github.com/${ghUser}`"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="GitHub"
+      >
+        <svg viewBox="0 0 24 24" fill="currentColor" class="gh-profile-icon">
+          <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.119 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+        </svg>
+      </a>
+    </header>
 
+    <!-- 置顶仓库区 - 极简网格 -->
     <section v-if="repos.length" class="gh-section">
-      <h2 class="gh-section-title">置顶仓库</h2>
+      <h2 class="gh-section-title">开源项目</h2>
       <ul class="gh-repo-grid">
-        <li v-for="r in repos" :key="r.fullName" class="gh-repo-card">
+        <li v-for="r in repos" :key="r.fullName" class="gh-repo-item">
           <a :href="r.url" class="gh-repo-link" target="_blank" rel="noreferrer">
-            <div class="gh-repo-head">
-              <span class="gh-repo-icon" aria-hidden="true">📦</span>
-              <span class="gh-repo-name">{{ r.fullName }}</span>
-            </div>
-            <p class="gh-repo-desc">{{ r.description || '暂无描述。' }}</p>
-            <div class="gh-repo-meta">
-              <span v-if="r.language" class="gh-lang">
-                <span class="gh-lang-dot" :style="{ background: colorFor(r.language) }" />
-                {{ r.language }}
-              </span>
-              <span class="gh-stars">★ {{ r.stars }}</span>
-            </div>
+            <span class="gh-repo-name">{{ r.fullName }}</span>
+            <span v-if="r.language" class="gh-repo-lang">
+              <span class="gh-lang-dot" :style="{ background: colorFor(r.language) }" />
+              {{ r.language }}
+            </span>
+            <span class="gh-repo-stars">{{ r.stars }}</span>
           </a>
         </li>
       </ul>
     </section>
 
-    <section v-if="posts.length" class="gh-section post-feed-section">
-      <header class="post-feed-header">
-        <h2 class="post-feed-heading">文章列表</h2>
-        <span class="post-feed-subheading">最新发布</span>
-      </header>
-      <ul class="post-entry-list" role="list">
-        <li v-for="post in posts" :key="post.issue" class="post-entry">
-          <a :href="withBase(post.path)" class="post-entry-card">
-            <div class="post-entry-aside">
-              <img class="post-entry-avatar" :src="avatarUrl" width="48" height="48" :alt="ghUser" />
-            </div>
-            <div class="post-entry-body">
-              <div class="post-entry-header-flex">
-                <h3 class="post-entry-title">{{ post.title }}</h3>
-                <div
-                  v-if="postLabels(post).length"
-                  class="post-entry-labels"
-                  role="list"
-                  aria-label="标签"
+    <!-- 文章列表区 - 极简列表 -->
+    <section v-if="posts.length" class="gh-section gh-posts">
+      <h2 class="gh-section-title">文章</h2>
+      <ul class="post-list" role="list">
+        <li v-for="(post, index) in posts" :key="post.issue" class="post-item" :style="{ '--delay': index }">
+          <a :href="withBase(post.path)" class="post-link">
+            <div class="post-main">
+              <h3 class="post-title">{{ post.title }}</h3>
+              <div v-if="postLabels(post).length" class="post-labels">
+                <span
+                  v-for="lb in postLabels(post)"
+                  :key="lb.name"
+                  class="post-label"
+                  :style="{ color: `#${lb.color}` }"
                 >
-                  <span
-                    v-for="lb in postLabels(post)"
-                    :key="lb.name"
-                    class="post-entry-label-wrap"
-                    role="listitem"
-                  >
-                    <span
-                      class="post-entry-label"
-                      :style="{ backgroundColor: `#${lb.color}`, color: labelTextColor(lb.color) }"
-                      >{{ lb.name }}</span
-                    >
-                  </span>
-                </div>
-              </div>
-              <div class="post-entry-meta">
-                <span class="post-entry-author">{{ profile.displayName }}</span>
-                <span class="post-entry-sep">·</span>
-                <time class="post-entry-time" :datetime="post.date">{{ post.date }}</time>
-                <span class="post-entry-sep">·</span>
-                <span class="post-entry-chip">#{{ post.issue }}</span>
+                  {{ lb.name }}
+                </span>
               </div>
             </div>
-            <span class="post-entry-arrow" aria-hidden="true">›</span>
+            <div class="post-meta">
+              <time :datetime="post.date">{{ formatDate(post.date) }}</time>
+              <span class="post-issue">#{{ post.issue }}</span>
+            </div>
           </a>
         </li>
       </ul>
     </section>
 
-    <section v-else class="gh-section gh-muted">
-      <p>暂无文章。{{ emptyPostsHint }}</p>
+    <section v-else class="gh-section gh-empty">
+      <p class="gh-empty-text">暂无文章</p>
+      <p class="gh-empty-hint">{{ emptyPostsHint }}</p>
     </section>
+
+    <!-- 极简页脚 -->
+    <footer class="gh-footer">
+      <p>© {{ new Date().getFullYear() }} {{ profile.displayName }}</p>
+    </footer>
   </div>
 </template>
 
 <style scoped>
+/* 极简首页容器 */
 .gh-home {
-  max-width: 980px;
+  max-width: 720px;
   margin: 0 auto;
-  padding: 2rem 1.5rem 3rem;
+  padding: 4rem 1.5rem 6rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
+/* 极简个人信息区 - 大量留白 */
 .gh-profile {
   display: flex;
-  gap: 1.5rem;
   align-items: flex-start;
-  padding-bottom: 2rem;
-  border-bottom: 1px solid var(--vp-c-divider);
-  margin-bottom: 2rem;
+  justify-content: space-between;
+  margin-bottom: 4rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid var(--site-border);
+}
+
+.gh-profile-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
 }
 
 .gh-avatar {
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  border: 1px solid var(--vp-c-divider);
-  flex-shrink: 0;
+  object-fit: cover;
+  filter: grayscale(20%);
+  transition: filter var(--transition-fast);
+}
+
+.gh-avatar:hover {
+  filter: grayscale(0%);
+}
+
+.gh-profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
 }
 
 .gh-name {
-  margin: 0 0 0.35rem;
-  font-size: 1.75rem;
+  margin: 0;
+  font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: -0.02em;
+  color: var(--site-text-heading);
 }
 
 .gh-bio {
-  margin: 0 0 0.75rem;
-  color: var(--vp-c-text-2);
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--site-text-muted);
   line-height: 1.5;
 }
 
 .gh-profile-link {
-  font-size: 0.95rem;
-  color: var(--vp-c-brand-1);
-  text-decoration: none;
-}
-.gh-profile-link:hover {
-  text-decoration: underline;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--site-text-muted);
+  border-radius: 50%;
+  transition: all var(--transition-fast);
 }
 
+.gh-profile-link:hover {
+  color: var(--site-text-heading);
+  background: var(--site-bg-hover);
+}
+
+.gh-profile-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* 区块通用样式 - 大量留白 */
 .gh-section {
-  margin-bottom: 2.5rem;
+  margin-bottom: 4rem;
 }
 
 .gh-section-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin: 0 0 1rem;
-  letter-spacing: -0.01em;
-}
-
-.gh-repo-grid {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1rem;
-}
-
-.gh-repo-card {
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 6px;
-  background: var(--vp-c-bg-soft);
-  transition: border-color 0.15s;
-}
-.gh-repo-card:hover {
-  border-color: var(--vp-c-brand-1);
-}
-
-.gh-repo-link {
-  display: block;
-  padding: 1rem;
-  text-decoration: none;
-  color: inherit;
-  height: 100%;
-}
-
-.gh-repo-head {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  margin-bottom: 0.5rem;
-}
-
-.gh-repo-name {
-  font-weight: 600;
-  color: var(--vp-c-brand-1);
-  font-size: 0.95rem;
-}
-
-.gh-repo-desc {
-  margin: 0 0 0.75rem;
-  font-size: 0.85rem;
-  color: var(--vp-c-text-2);
-  line-height: 1.45;
-  min-height: 2.6em;
-}
-
-.gh-repo-meta {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 0.8rem;
-  color: var(--vp-c-text-3);
-}
-
-.gh-lang {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.gh-lang-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-/* 首页文章流 */
-.post-feed-section {
-  padding: 1.25rem 1.25rem 1.5rem;
-  margin-left: -0.5rem;
-  margin-right: -0.5rem;
-  border-radius: var(--site-radius-lg);
-  background: var(--site-bg-canvas);
-  border: 1px solid var(--site-border);
-}
-
-.post-feed-header {
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-  padding-left: 0.15rem;
-}
-
-.post-feed-heading {
-  margin: 0;
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--site-text-heading);
-  padding-left: 0.65rem;
-  border-left: 4px solid var(--site-accent);
-  line-height: 1.2;
-}
-
-.post-feed-subheading {
-  font-size: 0.8125rem;
+  margin: 0 0 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   color: var(--site-text-muted);
 }
 
-.post-entry-list {
+/* 极简仓库列表 - 无边框纯文字 */
+.gh-repo-grid {
   list-style: none;
   padding: 0;
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
-.post-entry-card {
-  display: flex;
-  align-items: stretch;
-  gap: 1rem;
-  padding: 1rem 1.1rem;
-  text-decoration: none;
-  color: inherit;
-  background: var(--site-bg-card);
-  border: 1px solid var(--site-border);
-  border-radius: var(--site-radius-lg);
-  box-shadow: var(--site-shadow);
-  transition:
-    box-shadow 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.15s ease;
+.gh-repo-item {
+  border-bottom: 1px solid var(--site-border-light);
 }
 
-.post-entry-card:hover {
-  border-color: color-mix(in srgb, var(--site-accent) 35%, var(--site-border));
-  box-shadow: var(--site-shadow-hover);
-  transform: translateY(-1px);
-}
-
-.post-entry-header-flex {
+.gh-repo-link {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 1rem;
+  padding: 0.875rem 0;
+  text-decoration: none;
+  color: inherit;
+  transition: padding-left var(--transition-fast);
 }
 
-.post-entry-card:hover .post-entry-title {
-  color: var(--site-accent);
+.gh-repo-link:hover {
+  padding-left: 0.5rem;
 }
 
-.post-entry-aside {
-  flex-shrink: 0;
-  padding-top: 0.1rem;
-}
-
-.post-entry-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 1px solid var(--site-border);
-  background: var(--site-chip-bg);
-}
-
-.post-entry-body {
+.gh-repo-name {
   flex: 1;
-  min-width: 0;
-}
-
-.post-entry-title {
-  margin: 0 0 0.45rem;
-  font-size: 1.0625rem;
-  font-weight: 600;
-  line-height: 1.45;
+  font-size: 0.9375rem;
+  font-weight: 500;
   color: var(--site-text-heading);
-  letter-spacing: -0.01em;
-  transition: color 0.15s ease;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.post-entry-labels {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-  margin: 0 0 0.5rem;
-  list-style: none;
-  padding: 0;
-}
-
-.post-entry-label-wrap {
-  display: inline-flex;
-}
-
-.post-entry-label {
-  display: inline-block;
-  max-width: 12rem;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 0.12rem 0.45rem;
-  border-radius: 999px;
-  font-size: 0.72rem;
-  font-weight: 600;
-  line-height: 1.35;
-  border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
 }
 
-.post-entry-meta {
-  display: flex;
-  flex-wrap: wrap;
+.gh-repo-link:hover .gh-repo-name {
+  color: var(--site-accent-hover);
+}
+
+.gh-repo-lang {
+  display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.375rem;
+  font-size: 0.8125rem;
+  color: var(--site-text-muted);
+  white-space: nowrap;
+}
+
+.gh-lang-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.gh-repo-stars {
+  font-size: 0.8125rem;
+  color: var(--site-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* 极简文章列表 */
+.gh-posts .gh-section-title {
+  margin-bottom: 1rem;
+}
+
+.post-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-item {
+  border-bottom: 1px solid var(--site-border-light);
+  animation: fadeIn 0.5s ease backwards;
+  animation-delay: calc(var(--delay) * 80ms);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.post-link {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 1.25rem 0;
+  text-decoration: none;
+  color: inherit;
+  transition: padding-left var(--transition-fast);
+}
+
+.post-link:hover {
+  padding-left: 0.5rem;
+}
+
+.post-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.post-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--site-text-heading);
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  transition: color var(--transition-fast);
+}
+
+.post-link:hover .post-title {
+  color: var(--site-accent-hover);
+}
+
+.post-labels {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.post-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.post-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  font-size: 0.8125rem;
+  color: var(--site-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.post-issue {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.5;
+}
+
+/* 空状态 */
+.gh-empty {
+  text-align: center;
+  padding: 4rem 0;
+}
+
+.gh-empty-text {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  color: var(--site-text-heading);
+}
+
+.gh-empty-hint {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--site-text-muted);
+  line-height: 1.6;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 极简页脚 */
+.gh-footer {
+  margin-top: 6rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--site-border);
+  text-align: center;
+}
+
+.gh-footer p {
+  margin: 0;
   font-size: 0.8125rem;
   color: var(--site-text-muted);
 }
 
-.post-entry-author {
-  color: var(--site-text-body);
-  font-weight: 500;
+/* 响应式优化 */
+@media (max-width: 640px) {
+  .gh-home {
+    padding: 2.5rem 1rem 4rem;
+  }
+
+  .gh-profile {
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+  }
+
+  .gh-profile-inner {
+    gap: 1rem;
+  }
+
+  .gh-avatar {
+    width: 56px;
+    height: 56px;
+  }
+
+  .gh-name {
+    font-size: 1.25rem;
+  }
+
+  .gh-bio {
+    font-size: 0.875rem;
+  }
+
+  .gh-section {
+    margin-bottom: 3rem;
+  }
+
+  .post-link {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .gh-repo-link {
+    flex-wrap: wrap;
+  }
+
+  .gh-repo-name {
+    width: 100%;
+  }
+
+  .gh-footer {
+    margin-top: 4rem;
+  }
 }
 
-.post-entry-sep {
-  color: var(--site-text-muted);
-  user-select: none;
+/* 深色模式微调 */
+html.dark .gh-avatar {
+  filter: grayscale(30%);
+  opacity: 0.9;
 }
 
-.post-entry-time {
-  color: var(--site-text-muted);
-}
-
-.post-entry-chip {
-  padding: 0.1rem 0.45rem;
-  border-radius: 2px;
-  background: var(--site-chip-bg);
-  color: var(--site-chip-text);
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.post-entry-arrow {
-  flex-shrink: 0;
-  align-self: center;
-  font-size: 1.35rem;
-  font-weight: 300;
-  color: var(--site-text-muted);
-  opacity: 0.65;
-  transition:
-    transform 0.15s ease,
-    color 0.15s ease;
-}
-
-.post-entry-card:hover .post-entry-arrow {
-  color: var(--site-accent);
-  transform: translateX(2px);
-}
-
-.gh-muted {
-  color: var(--vp-c-text-2);
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-
-.gh-muted code {
-  font-size: 0.85em;
+html.dark .gh-avatar:hover {
+  filter: grayscale(0%);
+  opacity: 1;
 }
 </style>

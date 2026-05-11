@@ -1,38 +1,124 @@
 /**
- * 站点内容区共用色板（首页文章流与博客正文）
+ * 极简现代风设计系统
+ * 强调：大量留白、中性色调、几何简洁、优雅排版
  */
 :root {
-  --site-accent: #1e80ff;
-  --site-accent-soft: color-mix(in srgb, #1e80ff 12%, transparent);
-  --site-accent-hover: #1171ee;
-  --site-bg-canvas: #f7f8fa;
+  /* 中性主色调 - 纯黑到白的完整色阶 */
+  --gray-50: #fafafa;
+  --gray-100: #f5f5f5;
+  --gray-200: #e5e5e5;
+  --gray-300: #d4d4d4;
+  --gray-400: #a3a3a3;
+  --gray-500: #737373;
+  --gray-600: #525252;
+  --gray-700: #404040;
+  --gray-800: #262626;
+  --gray-900: #171717;
+  --gray-950: #0a0a0a;
+
+  /* 主色调 - 极简纯黑强调 */
+  --site-accent: #171717;
+  --site-accent-soft: rgba(23, 23, 23, 0.08);
+  --site-accent-hover: #000000;
+  --site-accent-light: #404040;
+
+  /* 背景色 - 纯净留白 */
+  --site-bg-canvas: #ffffff;
+  --site-bg-canvas-alt: #fafafa;
   --site-bg-card: #ffffff;
-  --site-bg-hover: #fafafa;
-  --site-text-heading: #252933;
-  --site-text-body: #515767;
-  --site-text-muted: #86909c;
-  --site-border: #e4e6eb;
-  --site-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --site-shadow-hover: 0 2px 12px 0 rgba(0, 0, 0, 0.08);
-  --site-chip-bg: #f2f3f5;
-  --site-chip-text: #515767;
+  --site-bg-hover: #f5f5f5;
+  --site-bg-elevated: #ffffff;
+
+  /* 文字色 - 层次分明的中性灰 */
+  --site-text-heading: #171717;
+  --site-text-body: #525252;
+  --site-text-muted: #737373;
+  --site-text-placeholder: #a3a3a3;
+
+  /* 边框 - 极淡的分隔 */
+  --site-border: #e5e5e5;
+  --site-border-light: #f5f5f5;
+  --site-border-strong: #d4d4d4;
+  --site-divider: rgba(0, 0, 0, 0.06);
+
+  /* 阴影 - 极简、克制 */
+  --site-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --site-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --site-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --site-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --site-shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.08);
+
+  /* 圆角 - 克制、几何 */
+  --site-radius-sm: 2px;
   --site-radius: 4px;
+  --site-radius-md: 6px;
   --site-radius-lg: 8px;
+  --site-radius-xl: 12px;
+  --site-radius-full: 9999px;
+
+  /* 芯片/标签 - 极简边框风格 */
+  --site-chip-bg: transparent;
+  --site-chip-bg-hover: #f5f5f5;
+  --site-chip-text: #525252;
+  --site-chip-border: #e5e5e5;
+
+  /* 过渡 */
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 300ms ease;
 }
 
+/* 深色模式 - 深邃纯粹 */
 html.dark {
-  --site-accent: #3c9cff;
-  --site-accent-soft: color-mix(in srgb, #3c9cff 18%, transparent);
-  --site-accent-hover: #66b3ff;
-  --site-bg-canvas: #0f0f0f;
-  --site-bg-card: #1a1a1a;
-  --site-bg-hover: #222;
-  --site-text-heading: rgba(255, 255, 255, 0.92);
-  --site-text-body: rgba(255, 255, 255, 0.7);
-  --site-text-muted: rgba(255, 255, 255, 0.45);
-  --site-border: #2f2f2f;
-  --site-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.35);
-  --site-shadow-hover: 0 4px 16px 0 rgba(0, 0, 0, 0.45);
-  --site-chip-bg: #2a2a2a;
-  --site-chip-text: rgba(255, 255, 255, 0.65);
+  /* 主色调 - 纯白强调 */
+  --site-accent: #ffffff;
+  --site-accent-soft: rgba(255, 255, 255, 0.1);
+  --site-accent-hover: #f5f5f5;
+  --site-accent-light: #a3a3a3;
+
+  /* 背景色 - 深邃黑 */
+  --site-bg-canvas: #0a0a0a;
+  --site-bg-canvas-alt: #111111;
+  --site-bg-card: #141414;
+  --site-bg-hover: #1a1a1a;
+  --site-bg-elevated: #1f1f1f;
+
+  /* 文字色 */
+  --site-text-heading: #ffffff;
+  --site-text-body: #a3a3a3;
+  --site-text-muted: #737373;
+  --site-text-placeholder: #525252;
+
+  /* 边框 */
+  --site-border: #262626;
+  --site-border-light: #1a1a1a;
+  --site-border-strong: #404040;
+  --site-divider: rgba(255, 255, 255, 0.06);
+
+  /* 阴影 - 深邃 */
+  --site-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --site-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  --site-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --site-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --site-shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.6);
+
+  /* 芯片 */
+  --site-chip-bg: transparent;
+  --site-chip-bg-hover: #1a1a1a;
+  --site-chip-text: #a3a3a3;
+  --site-chip-border: #262626;
+}
+
+/* 语言颜色 - 保持 */
+:root {
+  --lang-typescript: #3178c6;
+  --lang-javascript: #f1e05a;
+  --lang-vue: #41b883;
+  --lang-rust: #dea584;
+  --lang-go: #00add8;
+  --lang-python: #3572a5;
+  --lang-html: #e34c26;
+  --lang-css: #563d7c;
+  --lang-shell: #89e051;
+  --lang-ruby: #701516;
 }
