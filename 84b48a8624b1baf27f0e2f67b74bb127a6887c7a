@@ -1,0 +1,24 @@
+.github/workflows/sync-content.yml
+  85523868dce88868 5-6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "84b48a8624b1baf27f0e2f67b74bb127a6887c7a",
+  "prompts": {
+    "85523868dce88868": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "8951f626-3d5a-4437-9e0c-671e8bd5efe5",
+        "model": "default"
+      },
+      "human_author": "mingzhou",
+      "messages": [],
+      "total_additions": 42,
+      "total_deletions": 42,
+      "accepted_lines": 34,
+      "overriden_lines": 0,
+      "messages_url": "https://tripartite-bff.tsign.cn/cas/4e6d33c75d027aefd8459b33811e55cdad9da02e092ccdc72347b4f53af144b2"
+    }
+  }
+}
