@@ -10,6 +10,19 @@ const profile = githubContent.profile
 const ghUser = profile.githubUsername || githubContent.owner
 const avatarUrl = `https://github.com/${ghUser}.png?size=128`
 
+const introText =
+  typeof profile.intro === 'string' && profile.intro.trim() ? profile.intro.trim() : ''
+
+const techStackItems = computed(() => {
+  const raw = profile.techStack
+  if (!Array.isArray(raw)) return []
+  return raw
+    .map((x) => (typeof x === 'string' ? x.trim() : String(x).trim()))
+    .filter(Boolean)
+})
+
+const techStackLine = computed(() => techStackItems.value.join(' · '))
+
 const repos = computed(() => (Array.isArray(homeRepos) ? homeRepos : []))
 
 type HomePost = {
@@ -105,6 +118,7 @@ const formatDate = (dateStr: string) => {
         <div class="gh-profile-info">
           <h1 class="gh-name">{{ profile.displayName }}</h1>
           <p class="gh-bio">{{ profile.bio }}</p>
+          <p v-if="techStackItems.length" class="gh-tech-line">{{ techStackLine }}</p>
         </div>
       </div>
       <a
@@ -119,6 +133,11 @@ const formatDate = (dateStr: string) => {
         </svg>
       </a>
     </header>
+
+    <section v-if="introText" class="gh-section gh-about">
+      <h2 class="gh-section-title">个人介绍</h2>
+      <div class="gh-intro">{{ introText }}</div>
+    </section>
 
     <!-- 置顶仓库区 - 极简网格 -->
     <section v-if="repos.length" class="gh-section">
@@ -191,7 +210,7 @@ const formatDate = (dateStr: string) => {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
   padding-bottom: 3rem;
   border-bottom: none;
   background-image: var(--site-line-fade-h);
@@ -202,8 +221,9 @@ const formatDate = (dateStr: string) => {
 
 .gh-profile-inner {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1.25rem;
+  min-width: 0;
 }
 
 .gh-avatar {
@@ -222,7 +242,8 @@ const formatDate = (dateStr: string) => {
 .gh-profile-info {
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
+  gap: 0.35rem;
+  min-width: 0;
 }
 
 .gh-name {
@@ -238,6 +259,13 @@ const formatDate = (dateStr: string) => {
   font-size: 0.9375rem;
   color: var(--site-text-muted);
   line-height: 1.5;
+}
+
+.gh-tech-line {
+  margin: 0.15rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--site-text-muted);
 }
 
 .gh-profile-link {
@@ -265,7 +293,7 @@ const formatDate = (dateStr: string) => {
 
 /* 区块通用样式 - 大量留白 */
 .gh-section {
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
 }
 
 .gh-section-title {
@@ -275,6 +303,18 @@ const formatDate = (dateStr: string) => {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--site-text-muted);
+}
+
+.gh-about .gh-section-title {
+  margin-bottom: 1rem;
+}
+
+.gh-intro {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--site-text-body);
+  white-space: pre-wrap;
 }
 
 /* 极简仓库列表 - 无边框纯文字 */
@@ -493,6 +533,10 @@ const formatDate = (dateStr: string) => {
 
   .gh-bio {
     font-size: 0.875rem;
+  }
+
+  .gh-tech-line {
+    font-size: 0.75rem;
   }
 
   .gh-section {

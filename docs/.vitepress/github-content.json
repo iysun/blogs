@@ -8,6 +8,19 @@
   "profile": {
     "displayName": "iysun",
     "bio": "个人站点与笔记。",
-    "githubUsername": "iysun"
+    "githubUsername": "iysun",
+    "intro": "linux爱好者, 擅长 ts golang python",
+    "techStack": [
+      "TypeScript",
+      "Vue",
+      "Vite",
+      "Node.js",
+      "Golang",
+      "Python",
+      "Docker",
+      "PostgreSQL",
+      "Redis",
+      "MongoDB"
+    ]
   }
 }
