@@ -6,14 +6,22 @@ const base = baseRaw.endsWith('/') ? baseRaw : `${baseRaw}/`
 const ghProfile = githubContent.profile
 const ghUser = ghProfile?.githubUsername || githubContent.owner
 
+const gc = githubContent as {
+  siteTitle?: string
+  profile?: { displayName?: string }
+}
+const customTitle = gc.siteTitle?.trim()
+const displayName = gc.profile?.displayName?.trim()
+const siteTitle = customTitle || (displayName ? `${displayName} 的博客` : '博客')
+
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   lang: 'zh-CN',
   base,
-  title: 'iysun 的博客',
+  title: siteTitle,
   description: '基于 GitHub Issues 与 VitePress 的个人站点',
   themeConfig: {
-    siteTitle: 'iysun 的博客',
+    siteTitle,
 
     nav: [{ text: '首页', link: '/' }],
 

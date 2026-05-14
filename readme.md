@@ -43,7 +43,9 @@ pnpm docs:preview
      - **留空或省略**则拉取列表中的全部 Issue（仍排除 PR）。随后还会应用下面的作者过滤。
    - `issuesOnlyRepoOwner`：可选，**默认 `true`**。为 `true` 时只保留 **创建者登录名等于 `owner`** 的 Issue（即仓库所属用户/组织账号本人发的 Issue）；设为 `false` 时保留所有作者的 Issue。
    - `pinnedRepos`：首页「置顶仓库」区块展示的 `owner/repo` 列表，可为多个。
-   - `profile`：首页展示用的昵称、简介、`githubUsername`（用于头像与 GitHub 链接）。
+   - `profile`：首页展示用的昵称、简介、`githubUsername`（用于头像与 GitHub 链接）。`displayName` 同时用于自动生成站点标题（见下）。
+   - `siteTitle`：可选。浏览器标签栏与站内标题；不写则为 `{profile.displayName} 的博客`，无昵称时为「博客」。
+   - `postsPreviewLimit`：可选。**省略或 `null`** 时同步脚本会把全部已收录 Issue 写入首页列表；设为**正整数**时只保留按创建时间从新到旧排序后的前 N 条。
    - `base`：须与 VitePress 的 `base` 一致（当前为 `/blogs/`）。
 2. 若使用 label：在 GitHub 上给要发布的 Issue 打上该 label；取消发布可去掉 label 后再次同步（会删除对应本地 `issue-*.md`）。若未使用 label，同步结果会随「当前 API 返回的、且通过作者过滤的」Issue 集合变化。
 3. 在仓库根目录执行：
@@ -54,7 +56,7 @@ pnpm content:sync
 
 脚本会：
 
-- 写入 [`docs/issue-<编号>.md`](docs/)（与 `index.md` 同级，含 `syncedFromIssue: true`、`layout: IssuePostLayout`、`pageClass: blog-doc`，以及 Issue 的 **`labels`**：`{ name, color }[]`，`color` 为 GitHub 返回的 6 位十六进制、无 `#`）；
+- 写入 [`docs/issue-<编号>.md`](docs/)（与 `index.md` 同级，含 `syncedFromIssue: true`、`layout: IssuePostLayout`、`pageClass: blog-doc`、`readingTime`（按正文约 300 字/分钟估算），以及 Issue 的 **`labels`**：`{ name, color }[]`，`color` 为 GitHub 返回的 6 位十六进制、无 `#`）；
 - 更新 [`docs/.vitepress/data/home-repos.json`](docs/.vitepress/data/home-repos.json)、[`home-posts.json`](docs/.vitepress/data/home-posts.json)（`posts[].labels` 与正文一致，供首页文章列表展示标签）以及 [`issue-nav.json`](docs/.vitepress/data/issue-nav.json)（按 Issue **创建时间升序**的上一篇/下一篇，供文章页脚使用）。
 
 文章页通过 [`IssuePostLayout.vue`](docs/.vitepress/theme/components/IssuePostLayout.vue) 包裹 Markdown（`<Content />`）；**不会**使用默认 `doc` 布局的右侧大纲，文末 **上一篇/下一篇** 由 `issue-nav.json` + 主题页脚自行渲染。版式与正文样式由 [`blog-doc.css`](docs/.vitepress/theme/blog-doc.css)（选择器挂在 `.issue-post`）配合 `content-tokens` 完成。

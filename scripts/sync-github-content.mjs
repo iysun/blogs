@@ -70,7 +70,7 @@ async function main() {
     }
   }
 
-  const { owner, repo, pinnedRepos, profile, postsPreviewLimit } = config
+  const { owner, repo, pinnedRepos, profile, postsPreviewLimit: previewLimitRaw } = config
   const { apiValue: issueLabelsApi, labels: issueLabelsList } = normalizeIssueLabels(config.issueLabel)
   /** 仅同步仓库 owner（配置里的 owner 字段）创建的 Issue；设为 false 则包含所有作者 */
   const issuesOnlyRepoOwner = config.issuesOnlyRepoOwner !== false
@@ -174,12 +174,14 @@ async function main() {
     const issueUrl = issue.html_url || `https://github.com/${owner}/${repo}/issues/${issue.number}`
     const labels = labelRecords(issue)
     const body = issue.body || ''
+    const readingTimeMinutes = Math.max(1, Math.ceil(body.trim().length / 300))
     const fm = [
       '---',
       `title: ${JSON.stringify(title)}`,
       `date: ${date}`,
       `issue: ${issue.number}`,
       `issueUrl: ${JSON.stringify(issueUrl)}`,
+      `readingTime: ${readingTimeMinutes}`,
       `labels: ${JSON.stringify(labels)}`,
       'syncedFromIssue: true',
       'layout: IssuePostLayout',
@@ -193,8 +195,12 @@ async function main() {
     console.log('Wrote', path.relative(repoRoot, fp))
   }
 
-  const previewN = Number(postsPreviewLimit) > 0 ? Number(postsPreviewLimit) : 8
-  const postsMeta = issues.slice(0, previewN).map((issue) => ({
+  const previewCap = Number(previewLimitRaw)
+  const issuesForHome =
+    previewLimitRaw != null && previewLimitRaw !== '' && Number.isFinite(previewCap) && previewCap > 0
+      ? issues.slice(0, previewCap)
+      : issues
+  const postsMeta = issuesForHome.map((issue) => ({
     title: issue.title || `第 ${issue.number} 号 Issue`,
     date: toIsoDate(issue.created_at),
     path: `/issue-${issue.number}`,
