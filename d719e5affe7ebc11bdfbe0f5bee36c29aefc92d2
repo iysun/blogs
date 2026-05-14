@@ -1,0 +1,36 @@
+scripts/sync-github-content.mjs
+  9bf37a09fefc730d 73,177,184,198-203
+docs/issue-1.md
+  9bf37a09fefc730d 6
+docs/.vitepress/github-content.json
+  9bf37a09fefc730d 12
+docs/.vitepress/config.mts
+  9bf37a09fefc730d 9-15,21,24
+docs/.vitepress/theme/components/IssuePostLayout.vue
+  9bf37a09fefc730d 112-131
+docs/issue-2.md
+  9bf37a09fefc730d 6
+readme.md
+  9bf37a09fefc730d 46-48,59
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "d719e5affe7ebc11bdfbe0f5bee36c29aefc92d2",
+  "prompts": {
+    "9bf37a09fefc730d": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "379671c0-7f84-410f-a8be-fa9fcbbe2486",
+        "model": "composer-2"
+      },
+      "human_author": "mingzhou",
+      "messages": [],
+      "total_additions": 475,
+      "total_deletions": 457,
+      "accepted_lines": 412,
+      "overriden_lines": 0,
+      "messages_url": "https://tripartite-bff.tsign.cn/cas/32cc22829177965e3e625ab90aab792555f858694ca108a353da2509f07adcf0"
+    }
+  }
+}
