@@ -1,0 +1,30 @@
+docs/.vitepress/theme/layout-shell.css
+  e4e67cd63f293fb7 32-34,37-43,45,47-49
+docs/.vitepress/theme/blog-doc.css
+  e4e67cd63f293fb7 39,104,118,120-121,154-158,168,275-278,294-295,297-303,326,333,361,366,384,388,396,434-438,481,498,520,529,531
+docs/.vitepress/theme/content-tokens.css
+  e4e67cd63f293fb7 53-60,62-63,65-66,72-79,96,100,131-137,139,141-142,148-155
+docs/.vitepress/theme/components/GitHubHome.vue
+  e4e67cd63f293fb7 196-200,251-253,258,298-301,304-306,310-311,372-375,378-380,384-385,403,456-460
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "527d49d1d082c7bef8132c92e3ec609f2308b4a6",
+  "prompts": {
+    "e4e67cd63f293fb7": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "63e5d75c-bb88-4c7d-95f0-392f7fb3a10f",
+        "model": "composer-2"
+      },
+      "human_author": "mingzhou",
+      "messages": [],
+      "total_additions": 1389,
+      "total_deletions": 1290,
+      "accepted_lines": 1185,
+      "overriden_lines": 0,
+      "messages_url": "https://tripartite-bff.tsign.cn/cas/9ef67a0f11bfbd5a0f9caccbd1440a0cc27393b4701080749c42ca9bec3c95dd"
+    }
+  }
+}
