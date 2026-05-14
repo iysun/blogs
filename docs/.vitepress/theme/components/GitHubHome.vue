@@ -141,7 +141,12 @@ const formatDate = (dateStr: string) => {
     <section v-if="posts.length" class="gh-section gh-posts">
       <h2 class="gh-section-title">文章</h2>
       <ul class="post-list" role="list">
-        <li v-for="(post, index) in posts" :key="post.issue" class="post-item" :style="{ '--delay': index }">
+        <li
+          v-for="(post, index) in posts"
+          :key="post.issue"
+          class="post-item post-stagger-fade"
+          :style="{ '--post-stagger-i': index }"
+        >
           <a :href="withBase(post.path)" class="post-link">
             <div class="post-main">
               <h3 class="post-title">{{ post.title }}</h3>
@@ -178,7 +183,7 @@ const formatDate = (dateStr: string) => {
   max-width: 720px;
   margin: 0 auto;
   padding: 4rem 1.5rem 6rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--site-font-sans);
 }
 
 /* 极简个人信息区 - 大量留白 */
@@ -345,19 +350,6 @@ const formatDate = (dateStr: string) => {
 
 .post-item {
   border-bottom: 1px solid var(--site-border-light);
-  animation: fadeIn 0.5s ease backwards;
-  animation-delay: calc(var(--delay) * 80ms);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .post-link {

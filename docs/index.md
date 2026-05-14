@@ -1,7 +1,8 @@
 ---
 layout: page
 sidebar: false
-aside: true
+aside: false
+pageClass: blog-doc
 ---
 
 <GitHubHome />

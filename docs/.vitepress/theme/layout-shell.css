@@ -1,0 +1,46 @@
+/**
+ * 将 VitePress 默认壳（导航、正文槽位）与站点令牌对齐
+ */
+
+.Layout.blog-doc {
+  --vp-c-bg: var(--site-bg-canvas-solid);
+  --vp-c-bg-alt: var(--site-bg-canvas-alt);
+  --vp-c-bg-elv: var(--site-bg-card);
+  --vp-c-bg-soft: var(--site-bg-hover);
+  --vp-c-divider: color-mix(in srgb, var(--site-border) 85%, transparent);
+  --vp-c-gutter: var(--site-divider);
+  --vp-c-border: var(--site-border-strong);
+  --vp-c-text-1: var(--site-text-heading);
+  --vp-c-text-2: var(--site-text-body);
+  --vp-c-text-3: var(--site-text-muted);
+  --vp-font-family-base: var(--site-font-sans);
+  --vp-font-family-mono: var(--site-font-mono);
+  --vp-nav-bg-color: var(--site-bg-canvas-solid);
+  --vp-nav-screen-bg-color: var(--site-bg-canvas-solid);
+  --vp-local-nav-bg-color: var(--site-bg-canvas-solid);
+  --vp-sidebar-bg-color: var(--site-bg-canvas-alt);
+  --vp-code-block-bg: var(--site-bg-canvas-alt);
+  --vp-code-bg: var(--site-bg-hover);
+  --vp-c-brand-1: var(--site-text-heading);
+  --vp-c-brand-2: var(--site-accent-hover);
+  --vp-c-brand-3: var(--site-text-heading);
+}
+
+.Layout.blog-doc #VPContent {
+  font-family: var(--site-font-sans);
+  background-image: var(--site-bg-canvas);
+  background-color: var(--site-bg-canvas-solid);
+}
+
+/* 导航栏分隔线与画布一致；首页顶部略透明模糊 */
+.Layout.blog-doc .VPNavBar .divider-line {
+  background-color: var(--site-divider);
+}
+
+@media (min-width: 960px) {
+  .Layout.blog-doc .VPNavBar.home.top:not(.screen-open) .content-body {
+    background-color: color-mix(in srgb, var(--site-bg-canvas-solid) 82%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}

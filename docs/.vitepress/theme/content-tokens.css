@@ -3,6 +3,14 @@
  * 强调：大量留白、中性色调、几何简洁、优雅排版
  */
 :root {
+  /* 字体栈 — 与正文组件共用 */
+  --site-font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --site-font-mono:
+    ui-monospace, SFMono-Regular, 'Cascadia Code', 'Source Code Pro', Menlo, Monaco,
+    Consolas, monospace;
+
   /* 中性主色调 - 纯黑到白的完整色阶 */
   --gray-50: #fafafa;
   --gray-100: #f5f5f5;
@@ -22,9 +30,10 @@
   --site-accent-hover: #000000;
   --site-accent-light: #404040;
 
-  /* 背景色 - 纯净留白 */
-  --site-bg-canvas: #ffffff;
-  --site-bg-canvas-alt: #fafafa;
+  /* 背景色：纯色用于须 background-color 的控件；渐变用于整页铺底 */
+  --site-bg-canvas-solid: #fdfdfd;
+  --site-bg-canvas: linear-gradient(180deg, #f6f6f6 0%, #ffffff 42%, #fafafa 100%);
+  --site-bg-canvas-alt: #f5f5f5;
   --site-bg-card: #ffffff;
   --site-bg-hover: #f5f5f5;
   --site-bg-elevated: #ffffff;
@@ -55,6 +64,7 @@
   --site-radius-lg: 8px;
   --site-radius-xl: 12px;
   --site-radius-full: 9999px;
+  --site-radius-code: 6px;
 
   /* 芯片/标签 - 极简边框风格 */
   --site-chip-bg: transparent;
@@ -76,9 +86,10 @@ html.dark {
   --site-accent-hover: #f5f5f5;
   --site-accent-light: #a3a3a3;
 
-  /* 背景色 - 深邃黑 */
-  --site-bg-canvas: #0a0a0a;
-  --site-bg-canvas-alt: #111111;
+  /* 背景色 - 深邃黑（alt 略提亮以利代码块/引用分层） */
+  --site-bg-canvas-solid: #0a0a0a;
+  --site-bg-canvas: linear-gradient(180deg, #0c0c0c 0%, #0a0a0a 45%, #0e0e0e 100%);
+  --site-bg-canvas-alt: #161616;
   --site-bg-card: #141414;
   --site-bg-hover: #1a1a1a;
   --site-bg-elevated: #1f1f1f;

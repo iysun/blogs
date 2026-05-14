@@ -158,17 +158,6 @@ onMounted(() => {
 
 <style scoped>
 .issue-post {
-  animation: fadeIn 0.4s ease;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  animation: fadeInUp 0.45s var(--ease-out-expo) both;
 }
 </style>
