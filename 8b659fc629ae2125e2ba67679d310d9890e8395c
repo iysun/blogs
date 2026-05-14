@@ -1,0 +1,38 @@
+docs/.vitepress/theme/components/IssuePostLayout.vue
+  e4e67cd63f293fb7 161
+docs/.vitepress/theme/layout-shell.css
+  e4e67cd63f293fb7 1-3,5-27,29-33,35-38,40-46
+docs/.vitepress/theme/blog-doc.css
+  e4e67cd63f293fb7 6,14,146,150,152,159-163,166,285,287-288,303-304,306,315,323-327,329-331,345-347,500-503,505-508
+docs/.vitepress/theme/content-tokens.css
+  e4e67cd63f293fb7 6-12,33-36,67,89-92
+docs/index.md
+  e4e67cd63f293fb7 5
+docs/.vitepress/theme/animations.css
+  e4e67cd63f293fb7 89-95
+docs/.vitepress/theme/index.ts
+  e4e67cd63f293fb7 8
+docs/.vitepress/theme/components/GitHubHome.vue
+  e4e67cd63f293fb7 144-149,186
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "8b659fc629ae2125e2ba67679d310d9890e8395c",
+  "prompts": {
+    "e4e67cd63f293fb7": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "63e5d75c-bb88-4c7d-95f0-392f7fb3a10f",
+        "model": "composer-2"
+      },
+      "human_author": "mingzhou",
+      "messages": [],
+      "total_additions": 1886,
+      "total_deletions": 1813,
+      "accepted_lines": 1602,
+      "overriden_lines": 1,
+      "messages_url": "https://tripartite-bff.tsign.cn/cas/ae85f7d2478bab6c137747f990b015ed5be37b8aaa8f4b75338fdca31a24bfd1"
+    }
+  }
+}
