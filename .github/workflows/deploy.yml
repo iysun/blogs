@@ -2,7 +2,7 @@ name: 部署 VitePress 站点到 GitHub Pages
 
 on:
   push:
-    branches: [master] # 当推送到 main 分支时触发
+    branches: [master] # 当推送到 master 分支时触发
 
 # 设置 GITHUB_TOKEN 的权限
 permissions:

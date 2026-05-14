@@ -193,7 +193,11 @@ const formatDate = (dateStr: string) => {
   justify-content: space-between;
   margin-bottom: 4rem;
   padding-bottom: 3rem;
-  border-bottom: 1px solid var(--site-border);
+  border-bottom: none;
+  background-image: var(--site-line-fade-h);
+  background-size: 100% 1px;
+  background-position: bottom;
+  background-repeat: no-repeat;
 }
 
 .gh-profile-inner {
@@ -244,12 +248,14 @@ const formatDate = (dateStr: string) => {
   height: 40px;
   color: var(--site-text-muted);
   border-radius: 50%;
-  transition: all var(--transition-fast);
+  transition:
+    color var(--transition-link),
+    background-color var(--transition-link);
 }
 
 .gh-profile-link:hover {
   color: var(--site-text-heading);
-  background: var(--site-bg-hover);
+  background: color-mix(in srgb, var(--site-bg-hover) 85%, transparent);
 }
 
 .gh-profile-icon {
@@ -289,14 +295,20 @@ const formatDate = (dateStr: string) => {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 0.875rem 0;
+  padding: 0.875rem 0.625rem;
+  margin-left: -0.625rem;
+  margin-right: -0.625rem;
+  border-radius: var(--site-radius-md);
   text-decoration: none;
   color: inherit;
-  transition: padding-left var(--transition-fast);
+  transition:
+    padding-left var(--transition-link),
+    background-color var(--transition-link);
 }
 
 .gh-repo-link:hover {
-  padding-left: 0.5rem;
+  padding-left: 1.125rem;
+  background-color: color-mix(in srgb, var(--site-bg-hover) 72%, transparent);
 }
 
 .gh-repo-name {
@@ -357,14 +369,20 @@ const formatDate = (dateStr: string) => {
   align-items: baseline;
   justify-content: space-between;
   gap: 2rem;
-  padding: 1.25rem 0;
+  padding: 1.25rem 0.625rem;
+  margin-left: -0.625rem;
+  margin-right: -0.625rem;
+  border-radius: var(--site-radius-md);
   text-decoration: none;
   color: inherit;
-  transition: padding-left var(--transition-fast);
+  transition:
+    padding-left var(--transition-link),
+    background-color var(--transition-link);
 }
 
 .post-link:hover {
-  padding-left: 0.5rem;
+  padding-left: 1.125rem;
+  background-color: color-mix(in srgb, var(--site-bg-hover) 72%, transparent);
 }
 
 .post-main {
@@ -382,7 +400,7 @@ const formatDate = (dateStr: string) => {
   color: var(--site-text-heading);
   letter-spacing: -0.01em;
   line-height: 1.4;
-  transition: color var(--transition-fast);
+  transition: color var(--transition-link);
 }
 
 .post-link:hover .post-title {
@@ -435,7 +453,11 @@ const formatDate = (dateStr: string) => {
 .gh-footer {
   margin-top: 6rem;
   padding-top: 2rem;
-  border-top: 1px solid var(--site-border);
+  border-top: none;
+  background-image: var(--site-line-fade-h);
+  background-size: 100% 1px;
+  background-position: 0 0;
+  background-repeat: no-repeat;
   text-align: center;
 }
 

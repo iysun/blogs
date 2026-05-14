@@ -36,7 +36,7 @@
   font-size: 0.875rem;
   color: var(--site-text-muted);
   text-decoration: none;
-  transition: color var(--transition-fast);
+  transition: color var(--transition-link);
 }
 
 .issue-post__back:hover {
@@ -101,7 +101,7 @@
   gap: 0.25rem;
   color: var(--site-text-muted);
   text-decoration: none;
-  transition: color var(--transition-fast);
+  transition: color var(--transition-link);
 }
 
 .issue-post__meta-link:hover {
@@ -115,8 +115,10 @@
   max-height: 400px;
   margin-bottom: 2.5rem;
   overflow: hidden;
-  border-radius: var(--site-radius-sm);
+  border-radius: var(--site-radius-md);
   background: var(--site-bg-canvas-alt);
+  border: 1px solid var(--site-border);
+  box-shadow: var(--site-shadow-surface);
 }
 
 .issue-post__hero-image {
@@ -149,7 +151,11 @@
   margin-bottom: 0.75rem;
   padding: 2rem 0 0;
   border: none;
-  border-top: 1px solid var(--site-divider);
+  border-top: none;
+  background-image: var(--site-line-fade-h);
+  background-size: 100% 1px;
+  background-position: 0 0;
+  background-repeat: no-repeat;
   font-size: 1.25rem;
   font-weight: 600;
   color: var(--site-text-heading);
@@ -159,7 +165,7 @@
 .Layout.blog-doc .issue-post__content h2:first-child {
   margin-top: 0;
   padding-top: 0;
-  border-top: none;
+  background-image: none;
 }
 
 .Layout.blog-doc .issue-post__content h3 {
@@ -266,7 +272,10 @@ html.dark .Layout.blog-doc .issue-post__content li::marker {
   text-decoration-color: var(--site-border-strong);
   text-underline-offset: 3px;
   text-decoration-thickness: 1px;
-  transition: text-decoration-color var(--transition-fast);
+  transition:
+    color var(--transition-link),
+    text-decoration-color var(--transition-link),
+    opacity var(--transition-link);
 }
 
 .Layout.blog-doc .issue-post__content a:hover {
@@ -282,10 +291,16 @@ html.dark .Layout.blog-doc .issue-post__content li::marker {
 /* 引用块 */
 .Layout.blog-doc .issue-post__content blockquote {
   margin: 1.5rem 0;
-  padding: 0.75rem 1rem 0.75rem 1.25rem;
-  border-left: 2px solid var(--site-border-strong);
+  padding: 0.875rem 1.125rem 0.875rem 1.375rem;
+  border-left: 2px solid color-mix(in srgb, var(--site-border-strong) 85%, var(--site-text-heading));
   border-radius: var(--site-radius-md);
-  background: var(--site-bg-canvas-alt);
+  background: linear-gradient(
+      105deg,
+      color-mix(in srgb, var(--site-bg-canvas-alt) 92%, var(--site-text-heading)) 0%,
+      var(--site-bg-canvas-alt) 38%
+    ),
+    var(--site-bg-canvas-alt);
+  box-shadow: var(--site-shadow-surface);
 }
 
 .Layout.blog-doc .issue-post__content blockquote p {
@@ -308,13 +323,14 @@ html.dark .Layout.blog-doc .issue-post__content li::marker {
   border: 1px solid var(--site-border);
   color: var(--site-text-heading);
   font-weight: 500;
+  box-shadow: var(--site-shadow-inset-top), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
 /* 代码块 */
 .Layout.blog-doc .issue-post__content div[class*='language-'] {
   border-radius: var(--site-radius-code);
   border: 1px solid var(--site-border);
-  box-shadow: none;
+  box-shadow: var(--site-shadow-code-depth);
   margin: 1.5rem 0;
   position: relative;
   background: var(--site-bg-canvas-alt);
@@ -342,11 +358,12 @@ html.dark .Layout.blog-doc .issue-post__content li::marker {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--site-text-muted);
-  background: var(--site-bg-canvas-solid);
+  background: color-mix(in srgb, var(--site-bg-canvas-solid) 94%, var(--site-bg-canvas-alt));
   border-bottom-left-radius: var(--site-radius-code);
   border-top-right-radius: var(--site-radius-code);
   border-left: 1px solid var(--site-border);
   border-bottom: 1px solid var(--site-border);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 /* 代码块语言标签 */
@@ -364,10 +381,11 @@ html.dark .Layout.blog-doc .issue-post__content li::marker {
 
 /* 图片 */
 .Layout.blog-doc .issue-post__content img {
-  border-radius: var(--site-radius-sm);
+  border-radius: var(--site-radius-md);
   border: 1px solid var(--site-border);
   max-width: 100%;
   height: auto;
+  box-shadow: var(--site-shadow-surface);
 }
 
 /* 分隔线 */
@@ -375,7 +393,7 @@ html.dark .Layout.blog-doc .issue-post__content li::marker {
   margin: 2.5rem 0;
   border: none;
   height: 1px;
-  background: var(--site-border);
+  background: var(--site-line-fade-h);
 }
 
 /* 表格 */
@@ -413,7 +431,11 @@ html.dark .Layout.blog-doc .issue-post__content li::marker {
   gap: 2rem;
   margin-top: 4rem;
   padding-top: 2rem;
-  border-top: 1px solid var(--site-border);
+  border-top: none;
+  background-image: var(--site-line-fade-h);
+  background-size: 100% 1px;
+  background-position: 0 0;
+  background-repeat: no-repeat;
 }
 
 /* 导航链接 - 极简纯文字 */
@@ -456,7 +478,7 @@ html.dark .Layout.blog-doc .issue-post__content li::marker {
   font-weight: 500;
   color: var(--site-text-muted);
   letter-spacing: 0.02em;
-  transition: color var(--transition-fast);
+  transition: color var(--transition-link);
 }
 
 .issue-post-nav__link:hover .issue-post-nav__label {
@@ -473,7 +495,7 @@ html.dark .Layout.blog-doc .issue-post__content li::marker {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  transition: color var(--transition-fast);
+  transition: color var(--transition-link);
 }
 
 .issue-post-nav__link:hover .issue-post-nav__title {
@@ -495,6 +517,7 @@ html.dark .issue-post__meta-avatar {
 html.dark .Layout.blog-doc .issue-post__content :not(pre) > code {
   background: var(--site-bg-hover);
   border-color: var(--site-border);
+  box-shadow: var(--site-shadow-inset-top), 0 1px 3px rgba(0, 0, 0, 0.35);
 }
 
 html.dark .Layout.blog-doc .issue-post__content div[class*='language-'] {
@@ -503,8 +526,9 @@ html.dark .Layout.blog-doc .issue-post__content div[class*='language-'] {
 }
 
 html.dark .Layout.blog-doc .issue-post__content div[class*='language-']::before {
-  background: var(--site-bg-elevated);
+  background: color-mix(in srgb, var(--site-bg-elevated) 88%, var(--site-bg-card));
   border-color: var(--site-border-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 /* 响应式优化 */

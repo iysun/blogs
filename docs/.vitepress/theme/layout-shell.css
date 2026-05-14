@@ -28,13 +28,25 @@
 
 .Layout.blog-doc #VPContent {
   font-family: var(--site-font-sans);
-  background-image: var(--site-bg-canvas);
   background-color: var(--site-bg-canvas-solid);
+  background-image: var(--site-bg-canvas), var(--site-noise-layer);
+  background-size: auto, 128px 128px;
+  background-repeat: no-repeat, repeat;
 }
 
-/* 导航栏分隔线与画布一致；首页顶部略透明模糊 */
+@media (prefers-reduced-motion: reduce) {
+  .Layout.blog-doc #VPContent {
+    background-image: var(--site-bg-canvas);
+    background-size: auto;
+    background-repeat: no-repeat;
+  }
+}
+
+/* 导航栏分隔线 — 渐变淡出，减轻切割感 */
 .Layout.blog-doc .VPNavBar .divider-line {
-  background-color: var(--site-divider);
+  height: 1px;
+  background-color: transparent;
+  background-image: var(--site-line-fade-h);
 }
 
 @media (min-width: 960px) {
