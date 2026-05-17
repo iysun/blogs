@@ -9,6 +9,8 @@
 .Layout.blog-doc .issue-post {
   box-sizing: border-box;
   max-width: 720px;
+  width: 100%;
+  min-width: 0;
   margin: 0 auto;
   padding: 2rem 1.5rem 4rem;
   background: transparent;
@@ -132,6 +134,8 @@
   font-size: 1.0625rem;
   line-height: 1.8;
   color: var(--site-text-body);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .Layout.blog-doc .issue-post__content h1 {
@@ -326,7 +330,7 @@ html.dark .Layout.blog-doc .issue-post__content li::marker {
   box-shadow: var(--site-shadow-inset-top), 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-/* 代码块 */
+/* 代码块（文章页无 .vp-doc，需自行限制横向溢出） */
 .Layout.blog-doc .issue-post__content div[class*='language-'] {
   border-radius: var(--site-radius-code);
   border: 1px solid var(--site-border);
@@ -334,12 +338,15 @@ html.dark .Layout.blog-doc .issue-post__content li::marker {
   margin: 1.5rem 0;
   position: relative;
   background: var(--site-bg-canvas-alt);
+  max-width: 100%;
+  overflow-x: auto;
 }
 
 .Layout.blog-doc .issue-post__content div[class*='language-'] pre {
   padding: 1rem 1.1rem;
   margin: 0;
   line-height: 1.72;
+  overflow-x: auto;
 }
 
 .Layout.blog-doc .issue-post__content div[class*='language-'] code {
