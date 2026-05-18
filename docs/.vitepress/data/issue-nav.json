@@ -14,8 +14,32 @@
         "path": "/issue-1",
         "title": "使用 github issue 写博客"
       },
+      "next": {
+        "issue": 3,
+        "path": "/issue-3",
+        "title": "切换 omz 到 zinit + starship"
+      }
+    },
+    "3": {
+      "prev": {
+        "issue": 2,
+        "path": "/issue-2",
+        "title": "为什么用 github issue 写blog"
+      },
+      "next": {
+        "issue": 4,
+        "path": "/issue-4",
+        "title": "[git] git worktree"
+      }
+    },
+    "4": {
+      "prev": {
+        "issue": 3,
+        "path": "/issue-3",
+        "title": "切换 omz 到 zinit + starship"
+      },
       "next": null
     }
   },
-  "updatedAt": "2026-05-11T03:01:40.213Z"
+  "updatedAt": "2026-05-18T06:21:33.227Z"
 }
