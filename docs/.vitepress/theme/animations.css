@@ -86,6 +86,14 @@
 .stagger-children > *:nth-child(9) { animation-delay: 400ms; }
 .stagger-children > *:nth-child(10) { animation-delay: 450ms; }
 
+/**
+ * 首页文章列表等：靠自定义序号延迟 stagger（配合 style --post-stagger-i）
+ */
+.post-stagger-fade {
+  animation: fadeInUp var(--duration-slow) var(--ease-out-expo) backwards;
+  animation-delay: calc(var(--post-stagger-i, 0) * 80ms);
+}
+
 /* ========== 悬停效果 ========== */
 
 /* 上浮效果 */

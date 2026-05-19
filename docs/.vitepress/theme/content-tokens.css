@@ -3,6 +3,14 @@
  * 强调：大量留白、中性色调、几何简洁、优雅排版
  */
 :root {
+  /* 字体栈 — 与正文组件共用 */
+  --site-font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  --site-font-mono:
+    ui-monospace, SFMono-Regular, 'Cascadia Code', 'Source Code Pro', Menlo, Monaco,
+    Consolas, monospace;
+
   /* 中性主色调 - 纯黑到白的完整色阶 */
   --gray-50: #fafafa;
   --gray-100: #f5f5f5;
@@ -22,9 +30,10 @@
   --site-accent-hover: #000000;
   --site-accent-light: #404040;
 
-  /* 背景色 - 纯净留白 */
-  --site-bg-canvas: #ffffff;
-  --site-bg-canvas-alt: #fafafa;
+  /* 背景色：纯色用于须 background-color 的控件；渐变用于整页铺底 */
+  --site-bg-canvas-solid: #fdfdfd;
+  --site-bg-canvas: linear-gradient(180deg, #f6f6f6 0%, #ffffff 42%, #fafafa 100%);
+  --site-bg-canvas-alt: #f5f5f5;
   --site-bg-card: #ffffff;
   --site-bg-hover: #f5f5f5;
   --site-bg-elevated: #ffffff;
@@ -41,12 +50,33 @@
   --site-border-strong: #d4d4d4;
   --site-divider: rgba(0, 0, 0, 0.06);
 
-  /* 阴影 - 极简、克制 */
+  /* 渐变分隔（弱化「生硬横线」感） */
+  --site-line-fade-h: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--site-border) 72%, transparent) 22%,
+    color-mix(in srgb, var(--site-border) 72%, transparent) 78%,
+    transparent 100%
+  );
+
+  /* 纸张噪声 — 叠在画布渐变之上，opacity 极低 */
+  --site-noise-layer: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+
+  /* 阴影 - 极简、分层「厚度」 */
+  --site-shadow-inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.72);
   --site-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
   --site-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   --site-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
   --site-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.06);
   --site-shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.08);
+  --site-shadow-surface:
+    var(--site-shadow-inset-top),
+    0 1px 2px rgba(0, 0, 0, 0.045),
+    0 4px 14px rgba(0, 0, 0, 0.042);
+  --site-shadow-code-depth:
+    var(--site-shadow-inset-top),
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 8px 22px rgba(0, 0, 0, 0.05);
 
   /* 圆角 - 克制、几何 */
   --site-radius-sm: 2px;
@@ -55,6 +85,7 @@
   --site-radius-lg: 8px;
   --site-radius-xl: 12px;
   --site-radius-full: 9999px;
+  --site-radius-code: 6px;
 
   /* 芯片/标签 - 极简边框风格 */
   --site-chip-bg: transparent;
@@ -62,10 +93,11 @@
   --site-chip-text: #525252;
   --site-chip-border: #e5e5e5;
 
-  /* 过渡 */
+  /* 过渡 — 链接与underline略加长，手感更稳 */
   --transition-fast: 150ms ease;
   --transition-base: 200ms ease;
   --transition-slow: 300ms ease;
+  --transition-link: 260ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* 深色模式 - 深邃纯粹 */
@@ -76,9 +108,10 @@ html.dark {
   --site-accent-hover: #f5f5f5;
   --site-accent-light: #a3a3a3;
 
-  /* 背景色 - 深邃黑 */
-  --site-bg-canvas: #0a0a0a;
-  --site-bg-canvas-alt: #111111;
+  /* 背景色 - 深邃黑（alt 略提亮以利代码块/引用分层） */
+  --site-bg-canvas-solid: #0a0a0a;
+  --site-bg-canvas: linear-gradient(180deg, #0c0c0c 0%, #0a0a0a 45%, #0e0e0e 100%);
+  --site-bg-canvas-alt: #161616;
   --site-bg-card: #141414;
   --site-bg-hover: #1a1a1a;
   --site-bg-elevated: #1f1f1f;
@@ -95,12 +128,31 @@ html.dark {
   --site-border-strong: #404040;
   --site-divider: rgba(255, 255, 255, 0.06);
 
-  /* 阴影 - 深邃 */
+  --site-line-fade-h: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--site-border-strong) 55%, transparent) 24%,
+    color-mix(in srgb, var(--site-border-strong) 55%, transparent) 76%,
+    transparent 100%
+  );
+
+  --site-noise-layer: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+
+  /* 阴影 - 深邃 + 顶缘微弱高光 */
+  --site-shadow-inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.055);
   --site-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --site-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
   --site-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --site-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
   --site-shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.6);
+  --site-shadow-surface:
+    var(--site-shadow-inset-top),
+    0 2px 6px rgba(0, 0, 0, 0.38),
+    0 10px 28px rgba(0, 0, 0, 0.28);
+  --site-shadow-code-depth:
+    var(--site-shadow-inset-top),
+    0 2px 5px rgba(0, 0, 0, 0.45),
+    0 12px 32px rgba(0, 0, 0, 0.32);
 
   /* 芯片 */
   --site-chip-bg: transparent;

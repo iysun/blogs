@@ -10,6 +10,19 @@ const profile = githubContent.profile
 const ghUser = profile.githubUsername || githubContent.owner
 const avatarUrl = `https://github.com/${ghUser}.png?size=128`
 
+const introText =
+  typeof profile.intro === 'string' && profile.intro.trim() ? profile.intro.trim() : ''
+
+const techStackItems = computed(() => {
+  const raw = profile.techStack
+  if (!Array.isArray(raw)) return []
+  return raw
+    .map((x) => (typeof x === 'string' ? x.trim() : String(x).trim()))
+    .filter(Boolean)
+})
+
+const techStackLine = computed(() => techStackItems.value.join(' · '))
+
 const repos = computed(() => (Array.isArray(homeRepos) ? homeRepos : []))
 
 type HomePost = {
@@ -105,6 +118,7 @@ const formatDate = (dateStr: string) => {
         <div class="gh-profile-info">
           <h1 class="gh-name">{{ profile.displayName }}</h1>
           <p class="gh-bio">{{ profile.bio }}</p>
+          <p v-if="techStackItems.length" class="gh-tech-line">{{ techStackLine }}</p>
         </div>
       </div>
       <a
@@ -119,6 +133,11 @@ const formatDate = (dateStr: string) => {
         </svg>
       </a>
     </header>
+
+    <section v-if="introText" class="gh-section gh-about">
+      <h2 class="gh-section-title">个人介绍</h2>
+      <div class="gh-intro">{{ introText }}</div>
+    </section>
 
     <!-- 置顶仓库区 - 极简网格 -->
     <section v-if="repos.length" class="gh-section">
@@ -141,7 +160,12 @@ const formatDate = (dateStr: string) => {
     <section v-if="posts.length" class="gh-section gh-posts">
       <h2 class="gh-section-title">文章</h2>
       <ul class="post-list" role="list">
-        <li v-for="(post, index) in posts" :key="post.issue" class="post-item" :style="{ '--delay': index }">
+        <li
+          v-for="(post, index) in posts"
+          :key="post.issue"
+          class="post-item post-stagger-fade"
+          :style="{ '--post-stagger-i': index }"
+        >
           <a :href="withBase(post.path)" class="post-link">
             <div class="post-main">
               <h3 class="post-title">{{ post.title }}</h3>
@@ -178,7 +202,7 @@ const formatDate = (dateStr: string) => {
   max-width: 720px;
   margin: 0 auto;
   padding: 4rem 1.5rem 6rem;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--site-font-sans);
 }
 
 /* 极简个人信息区 - 大量留白 */
@@ -186,15 +210,20 @@ const formatDate = (dateStr: string) => {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
   padding-bottom: 3rem;
-  border-bottom: 1px solid var(--site-border);
+  border-bottom: none;
+  background-image: var(--site-line-fade-h);
+  background-size: 100% 1px;
+  background-position: bottom;
+  background-repeat: no-repeat;
 }
 
 .gh-profile-inner {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1.25rem;
+  min-width: 0;
 }
 
 .gh-avatar {
@@ -213,7 +242,8 @@ const formatDate = (dateStr: string) => {
 .gh-profile-info {
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
+  gap: 0.35rem;
+  min-width: 0;
 }
 
 .gh-name {
@@ -231,6 +261,13 @@ const formatDate = (dateStr: string) => {
   line-height: 1.5;
 }
 
+.gh-tech-line {
+  margin: 0.15rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--site-text-muted);
+}
+
 .gh-profile-link {
   display: flex;
   align-items: center;
@@ -239,12 +276,14 @@ const formatDate = (dateStr: string) => {
   height: 40px;
   color: var(--site-text-muted);
   border-radius: 50%;
-  transition: all var(--transition-fast);
+  transition:
+    color var(--transition-link),
+    background-color var(--transition-link);
 }
 
 .gh-profile-link:hover {
   color: var(--site-text-heading);
-  background: var(--site-bg-hover);
+  background: color-mix(in srgb, var(--site-bg-hover) 85%, transparent);
 }
 
 .gh-profile-icon {
@@ -254,7 +293,7 @@ const formatDate = (dateStr: string) => {
 
 /* 区块通用样式 - 大量留白 */
 .gh-section {
-  margin-bottom: 4rem;
+  margin-bottom: 3rem;
 }
 
 .gh-section-title {
@@ -264,6 +303,18 @@ const formatDate = (dateStr: string) => {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--site-text-muted);
+}
+
+.gh-about .gh-section-title {
+  margin-bottom: 1rem;
+}
+
+.gh-intro {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  color: var(--site-text-body);
+  white-space: pre-wrap;
 }
 
 /* 极简仓库列表 - 无边框纯文字 */
@@ -284,14 +335,20 @@ const formatDate = (dateStr: string) => {
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 0.875rem 0;
+  padding: 0.875rem 0.625rem;
+  margin-left: -0.625rem;
+  margin-right: -0.625rem;
+  border-radius: var(--site-radius-md);
   text-decoration: none;
   color: inherit;
-  transition: padding-left var(--transition-fast);
+  transition:
+    padding-left var(--transition-link),
+    background-color var(--transition-link);
 }
 
 .gh-repo-link:hover {
-  padding-left: 0.5rem;
+  padding-left: 1.125rem;
+  background-color: color-mix(in srgb, var(--site-bg-hover) 72%, transparent);
 }
 
 .gh-repo-name {
@@ -345,19 +402,6 @@ const formatDate = (dateStr: string) => {
 
 .post-item {
   border-bottom: 1px solid var(--site-border-light);
-  animation: fadeIn 0.5s ease backwards;
-  animation-delay: calc(var(--delay) * 80ms);
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .post-link {
@@ -365,14 +409,20 @@ const formatDate = (dateStr: string) => {
   align-items: baseline;
   justify-content: space-between;
   gap: 2rem;
-  padding: 1.25rem 0;
+  padding: 1.25rem 0.625rem;
+  margin-left: -0.625rem;
+  margin-right: -0.625rem;
+  border-radius: var(--site-radius-md);
   text-decoration: none;
   color: inherit;
-  transition: padding-left var(--transition-fast);
+  transition:
+    padding-left var(--transition-link),
+    background-color var(--transition-link);
 }
 
 .post-link:hover {
-  padding-left: 0.5rem;
+  padding-left: 1.125rem;
+  background-color: color-mix(in srgb, var(--site-bg-hover) 72%, transparent);
 }
 
 .post-main {
@@ -390,7 +440,7 @@ const formatDate = (dateStr: string) => {
   color: var(--site-text-heading);
   letter-spacing: -0.01em;
   line-height: 1.4;
-  transition: color var(--transition-fast);
+  transition: color var(--transition-link);
 }
 
 .post-link:hover .post-title {
@@ -443,7 +493,11 @@ const formatDate = (dateStr: string) => {
 .gh-footer {
   margin-top: 6rem;
   padding-top: 2rem;
-  border-top: 1px solid var(--site-border);
+  border-top: none;
+  background-image: var(--site-line-fade-h);
+  background-size: 100% 1px;
+  background-position: 0 0;
+  background-repeat: no-repeat;
   text-align: center;
 }
 
@@ -479,6 +533,10 @@ const formatDate = (dateStr: string) => {
 
   .gh-bio {
     font-size: 0.875rem;
+  }
+
+  .gh-tech-line {
+    font-size: 0.75rem;
   }
 
   .gh-section {
