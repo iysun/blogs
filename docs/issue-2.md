@@ -3,7 +3,7 @@ title: "为什么用 github issue 写blog"
 date: 2026-05-10
 issue: 2
 issueUrl: "https://github.com/iysun/blogs/issues/2"
-readingTime: 2
+readingTime: 1
 labels: []
 syncedFromIssue: true
 layout: IssuePostLayout

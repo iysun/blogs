@@ -3,6 +3,7 @@ title: "切换 omz 到 zinit + starship"
 date: 2026-05-17
 issue: 3
 issueUrl: "https://github.com/iysun/blogs/issues/3"
+readingTime: 4
 labels: []
 syncedFromIssue: true
 layout: IssuePostLayout

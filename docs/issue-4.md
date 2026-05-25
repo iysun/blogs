@@ -3,6 +3,7 @@ title: "[git] git worktree"
 date: 2026-05-17
 issue: 4
 issueUrl: "https://github.com/iysun/blogs/issues/4"
+readingTime: 3
 labels: []
 syncedFromIssue: true
 layout: IssuePostLayout
